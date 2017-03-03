@@ -1,14 +1,17 @@
 import React from 'react';
-import { View, Text, Switch, Image, TouchableOpacity, ScrollView, NativeModules, AlertIOS } from 'react-native';
+import { View, Text, Switch, Image, TouchableOpacity, ScrollView, NativeModules, Platform, AlertIOS } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { Player } from 'react-native-audio-toolkit';
 import * as Animatable from 'react-native-animatable';
+// import { InAppBilling } from 'react-native-billing';
 
-import { Babyface, Confirm, SettingsHeader, Spinner } from '../components';
+import { Babyface, Button, Confirm, SettingsHeader, Spinner } from '../components';
 import Config from '../Config';
 import { toggleSwitchAccessory, coinsSubtract } from '../actions';
+
+const InAppBilling = require('react-native-billing');
 
 const { InAppUtils } = NativeModules;
 
@@ -26,6 +29,45 @@ class Settings extends React.Component {
         // buyOptionCoinsString: '',
     }
     componentWillMount() {
+        if (Platform.OS === 'ios') {
+            this.getIOSPurchaseOptions();
+        } else {
+            this.getAndroidPurchaseOptions();
+        }
+    }
+    async getAndroidPurchaseOptions() {
+        const products = [
+            'purchase_1000_coins',
+            'purchase_2500_coins',
+            'purchase_7000_coins',
+            'purchase_16000_coins',
+        ];
+
+        // sample data until can test on android device
+        const sorted = [
+            { coins: 1000, coinsString: '1,000', priceString: '$1.00', identifier: 'purchase_1000_coins' },
+            { coins: 2500, coinsString: '2,500', priceString: '$2.00', identifier: 'purchase_2500_coins' },
+            { coins: 7000, coinsString: '7,000', priceString: '$4.00', identifier: 'purchase_7000_coins' },
+            { coins: 16000, coinsString: '16,000', priceString: '$10.00', identifier: 'purchase_16000_coins' },
+        ];
+            this.setState({ products: sorted });
+
+        // To be sure the service is close before opening it
+        await InAppBilling.close();
+        try {
+            await InAppBilling.open();
+            const productDetails = await InAppBilling.getProductDetails(products);
+            console.log(productDetails);            
+            // IF OK, add fields coins, coinsString, priceString, identifier 
+            // sort then add product details to state
+            this.setState({ products: sorted });
+        } catch (err) {
+            console.log(err);
+        } finally {
+            await InAppBilling.close();
+        }
+    }
+    getIOSPurchaseOptions() {
         const products = [
             'com.BayBay.Purchase.Coin1000',
             'com.BayBay.Purchase.Coin2500',
@@ -93,7 +135,7 @@ class Settings extends React.Component {
     buyCoins(buyOption) {
         this.setState({ inAppModal: !this.state.inAppModal, buyOption });
     }
-    onAcceptInAppModal() {
+    purchaseIosProduct() {
         const productIdentifier = this.state.buyOption.identifier;
 
         InAppUtils.purchaseProduct(productIdentifier, (error, response) => {
@@ -109,6 +151,35 @@ class Settings extends React.Component {
                 this.props.coinsSubtract(-this.state.buyOption.coins);
             }
         });
+    }
+    purchaseAndroidProduct() {
+        const productIdentifier = this.state.buyOption.identifier;  // this will contain product id
+        // test    GET DATA                                            **************** TODO
+        // test with static responses use android.test.purchased
+        InAppBilling.open()
+        .then(async () => { 
+            const productDetails = await InAppBilling.getProductDetails(productIdentifier);
+            console.log(productDetails);
+        })
+        .then(() => InAppBilling.close());
+        
+        // should work on actual device
+        // InAppBilling.open()
+        // .then(() => InAppBilling.purchase(productIdentifier))
+        // .then((details) => {
+        //     console.log("You purchased: ", details);
+        //     return InAppBilling.close();
+        // })
+        //     .catch((err) => {
+        //     console.log(err);
+        // });
+    }
+    onAcceptInAppModal() {
+        if (Platform.OS === 'ios') {
+            this.purchaseIosProduct();
+        } else {
+            this.purchaseAndroidProduct();
+        }
 
         this.setState({ inAppModal: false });
     }
@@ -352,7 +423,7 @@ class Settings extends React.Component {
                     {this.state.buyCoinsView ? <View /> : renderAccessoryBabyface}
 
                 </Animatable.View>
-
+                
                 <Confirm
                     visible={this.state.buyModal}
                     onAccept={this.onAcceptBuyModal.bind(this)}

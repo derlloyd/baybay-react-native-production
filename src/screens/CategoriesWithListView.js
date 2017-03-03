@@ -13,6 +13,11 @@ class Categories extends React.Component {
     componentWillMount() {
         this.props.fetchAllCategories();
     }
+    componentWillReceiveProps(nextProps) {
+        // nextProps are the next set of props
+        // this.props are the old set of props
+        this.createDataSource(nextProps.allCategories);
+    }
     componentWillUpdate() {
         // animation to category when clicked
         // LayoutAnimation.spring();
@@ -42,17 +47,8 @@ class Categories extends React.Component {
     onDeclineCoinsModal() {
         this.setState({ coinsModal: false });
     }
-    getCategories() {
-        if (!this.props.allCategories[0]) {
-            return (
-                <Spinner size="large" />
-            );
-        }
-        const renderedCategories = this.props.allCategories.map(this.renderCategoryCard.bind(this));
-        return renderedCategories;
-    }
     buyLevel(level) {
-        // console.log('clicked level ', level);
+        console.log('clicked level ', level);
         // check if user has enough coins
         if (this.props.coins >= level.levelPrice) {
             // if yes, popup modal to confirm, add level to state
@@ -61,6 +57,11 @@ class Categories extends React.Component {
             // if no, popup modal to buy more coins
             this.setState({ coinsModal: !this.state.coinsModal });
         }
+    }
+    createDataSource(allCategories) {
+        // boilerplate to create datasource with category info
+        const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+        this.dataSource = ds.cloneWithRows(allCategories);
     }
     
     renderCategoryCard(category) {
@@ -158,8 +159,7 @@ class Categories extends React.Component {
 
         // main render category output
         return (
-            <TouchableOpacity
-                key={category.categoryId} 
+            <TouchableOpacity 
                 onPress={() => this.props.categoryUpdate(category, this.props.selected.category)}
             >
                     <Card image={category.categoryImage} style={styles.categoryStyle}>
@@ -179,7 +179,20 @@ class Categories extends React.Component {
             </TouchableOpacity>
         );
     }
-    
+    renderListView() {
+        // either render category list or spinner
+        if (this.dataSource) {
+            return (
+                <ListView
+                    dataSource={this.dataSource}
+                    renderRow={this.renderCategoryCard.bind(this)}
+                />   
+            );
+        }   // put a timer here, if spinner is here too long, throw error message (no internet)
+            return (
+                <Spinner size="large" />
+            );
+    }
     render() {
         // console.log(this.props);
         return (
@@ -191,7 +204,7 @@ class Categories extends React.Component {
                     coins={this.props.coins} 
                 />
 
-                {this.getCategories()}
+                {this.renderListView()}
 
                 <Confirm
                     visible={this.state.buyModal}

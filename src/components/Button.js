@@ -27,7 +27,7 @@ const styles = {
         fontSize: 16,
         fontWeight: 'bold',
         // fontFamily: 'KomikaAxis',
-        fontFamily: Config.fontMain,
+        fontFamily: Config.mainFont,
         // fontFamily: 'Noteworthy-Bold',
         // paddingLeft: 15,
         // borderWidth: 1,

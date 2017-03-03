@@ -115,7 +115,7 @@ class Artist extends React.Component {
             if (option.hide) {
                 // disabled inactive button, no text
                 return (
-                    <ButtonOption key={i} disabled />
+                    <ButtonOption key={i} disabled> </ButtonOption>
                 );
             }
             // standard option button

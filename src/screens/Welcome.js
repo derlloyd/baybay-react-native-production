@@ -250,12 +250,12 @@ class Welcome extends React.Component {
                     <Button style={{ flex: 0 }} onPress={() => this.setState({ infoModal: !this.state.infoModal })}>
                         {Strings.instructions.toUpperCase()}
                     </Button>
-
+                    <Text style={{ fontFamily: Config.fontMain }}>OKOKHere is the new text</Text>
                     <Text style={{ margin: 5, borderWidth: 1, flex: 0 }} onPress={this.viewModal.bind(this)}>
                         MODAL!!!
                     </Text>
 
-                    <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.deleteAsync.bind(this)}>
+                    <Text style={{ margin: 5, borderWidth: 1, fontFamily: Config.fontMain }} onPress={this.deleteAsync.bind(this)}>
                         async delete accesories + coins + levels
                     </Text>
                     

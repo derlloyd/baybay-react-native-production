@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.idehub.Billing.InAppBillingBridgePackage;
 import com.babisoft.ReactNativeLocalization.ReactNativeLocalizationPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
@@ -30,6 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new InAppBillingBridgePackage("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSEXlzZ1U8nowG0Feh3qB9rcPcB7yI6I7E6979SO95hbDZWczn5CEYkYHgyKEHkc4/jE3qZa9MkoWVTkUE8rajR8lf1JTVLkiH0+FVgWSm/wabXwy1OsIGPoZkkLLRr3VnBfoBJn9wesWzVAZFD8yqbrKKAcCYObB0uwMnPB8IT8qcI5WHvrThCCxmsDTBD9DqW6UWCNleF7BmA93xKe377W6urgknfRSVA8VV08WPmkhG7RnYYcSTeqlbkbsEPOroqi+Tw9uaB0nq+X6MDOEUnnt2KmBNl+R86lEtm+VC8Xs+7xzOQ0eLFqmnk9Cc+KcX1nAWXXIagABmZ0wi6Q3wIDAQAB"),
             new ReactNativeLocalizationPackage(),
             new RNFetchBlobPackage(),
             new VectorIconsPackage(),
