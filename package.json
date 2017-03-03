@@ -1,0 +1,35 @@
+{
+  "name": "baybay",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "firebase": "^3.6.5",
+    "react": "~15.4.0-rc.4",
+    "react-native": "0.40.0",
+    "react-native-animatable": "^1.1.0",
+    "react-native-audio-toolkit": "^1.0.5",
+    "react-native-fetch-blob": "^0.10.2-beta.6",
+    "react-native-in-app-utils": "^5.1.0",
+    "react-native-localization": "^0.1.26",
+    "react-native-router-flux": "^3.37.0",
+    "react-native-snap-carousel": "^2.0.1",
+    "react-native-vector-icons": "^4.0.0",
+    "react-redux": "^5.0.1",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.1.0"
+  },
+  "devDependencies": {
+    "babel-jest": "18.0.0",
+    "babel-preset-react-native": "1.9.1",
+    "eslint-config-rallycoding": "^3.1.0",
+    "jest": "18.1.0",
+    "react-test-renderer": "~15.4.0-rc.4"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
