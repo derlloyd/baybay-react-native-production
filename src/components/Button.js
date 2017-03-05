@@ -3,7 +3,7 @@ import { Text, TouchableHighlight } from 'react-native';
 
 import Config from '../Config';
 
-const Button = ({ onPress, correct, disabled, style, textStyle, children }) => {
+const Button = ({ onPress, correct, disabled, style, children }) => {
     // can pass style prop to component, it will override default style
     // correct argument passed to correct answer, change underlay color based on this
     // test this as it may allow cheating
@@ -13,7 +13,7 @@ const Button = ({ onPress, correct, disabled, style, textStyle, children }) => {
             onPress={onPress} 
             style={disabled ? styles.buttonStyleDisabled : [styles.buttonStyle, style]}
         >
-            <Text style={[styles.textStyle, textStyle]}>
+            <Text style={styles.textStyle}>
                 {children}
             </Text>
         </TouchableHighlight>
@@ -27,7 +27,7 @@ const styles = {
         fontSize: 16,
         fontWeight: 'bold',
         // fontFamily: 'KomikaAxis',
-        fontFamily: Config.mainFont,
+        fontFamily: Config.fontMain,
         // fontFamily: 'Noteworthy-Bold',
         // paddingLeft: 15,
         // borderWidth: 1,

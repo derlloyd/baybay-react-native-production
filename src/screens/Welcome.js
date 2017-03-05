@@ -9,11 +9,11 @@ import { Player } from 'react-native-audio-toolkit';
 
 // import * as Animatable from 'react-native-animatable';
 // import Icon from 'react-native-vector-icons/FontAwesome';
-import { Button, ButtonFb, Babyface, Confirm, InfoModal, Spinner } from '../components';
+import { Button, Babyface, Confirm, InfoModal, Spinner } from '../components';
 import { 
-    loginWithFacebook, 
-    playAnonymous, 
-    signOut, 
+    // loginWithFacebook, 
+    // playAnonymous, 
+    // signOut, 
     getInitialCoins, 
     fetchAllChallenges, 
     getInitialAccessories, 
@@ -27,6 +27,10 @@ import {
 } from '../actions';
 import Config from '../Config';
 import Strings from '../Strings';
+
+const FBSDK = require('react-native-fbsdk');
+
+const { LoginButton, AccessToken } = FBSDK;
 
 // react-native-flags to change languages
 
@@ -47,21 +51,52 @@ class Welcome extends React.Component {
         // load challenges objects to redux state
         this.props.fetchAllChallenges();
 
-        // load coin purchase options to redux state
-        // this.props.fetchAllCoinsPurchaseOptions();
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                console.log('Firebase signed in, user: ', user);
+            } else {
+                console.log('No firebase user.');
+                // No user is signed in.
+            }
+        });
 
         // babysounds for face onPress
         this.props.fetchIntroBabysounds();
 
         this.checkInternet();
 
-        this.checkForUser();
-
         this.loadAsyncData();
 
         this.clearLongSounds();
     }
     
+    onFbLoginFinished(error, result) {
+        if (error) {
+            console.log('facebook login has error: ', result.error);
+        } else if (result.isCancelled) {
+            console.log('facebook login cancelled.');
+        } else {
+            AccessToken.getCurrentAccessToken().then(
+                (data) => {
+                    console.log('facebook log in success');
+
+                    const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken.toString());
+                    firebase.auth().signInWithCredential(credential).then((user) => {
+                        console.log('Firebase Sign In Success', user);
+                        Actions.categories();
+                    }, (err) => {
+                        console.log('Firebase Sign In Error', err);
+                    });
+                }
+            );
+        }
+    }
+
+    onFbLogoutFinished() {
+        console.log('facebook logged out.');
+        firebase.auth().signOut().then(() => console.log('firebase logged out'));
+    }
+
     clearLongSounds() {
         // delete challenge long sound mp3s to save space
         RNFetchBlob.fs.unlink(Config.localChallengesLong).then(() => {
@@ -72,21 +107,7 @@ class Welcome extends React.Component {
         //     console.log('cleared: ', Config.localChallenges);
         // });
     }
-    checkForUser() {
-      
 
-        // console.log('loading firebase');
-        // get firebase info from async storage, if they exist
-        // AsyncStorage.getItem('firebase*', (err, obj) => {
-        //     if (obj) {
-        //         console.log('retrieved : ', JSON.parse(obj));
-        //         // this.props.getInitialAccessories(JSON.parse(accessories));
-        //     }
-        //     console.log('firebase err, ', err);
-        // });
-
-
-    }
     loadAsyncData() {
         // get users' coins from async storage, if they exist
         AsyncStorage.getItem('coins', (err, coins) => {
@@ -136,16 +157,6 @@ class Welcome extends React.Component {
             }
             }).catch(err => console.error('An error occurred', err));
 
-        
-        // Android 
-        // To request network info, you need to add the following line to 
-        // your app's AndroidManifest.xml:
-
-        // <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> 
-        // Asynchronously determine if the device is connected and 
-        // details about that connection.
-        
-
         NetInfo.fetch().done((reach) => {
             console.log('NetInfo.fetch result ', reach);
         });
@@ -180,58 +191,7 @@ class Welcome extends React.Component {
 
         console.log('deleted accessories and coins, now reload');
     }
-    onPlayPress() {
-          firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                user.getToken().then(data => console.log(data));
-                // console.log('get token ', user.getToken());
-                // User is signed in, go to next screen
-                console.log('signed in firebase OK!!!!!!!!!!!!!!!!!!: ', user);
-            } else {
-                // No user is signed in.
-                console.log('no one signed in, now check...');
-                
-                // check asyncStorage to see if refresh token is there
-                AsyncStorage.getItem('user', (err, userInfo) => {
-                    if (userInfo) {
-                        const userObj = JSON.parse(userInfo);
-                        console.log('user stored in async: ', userObj);
-                        // login firebase with access token
-                        firebase.auth().signInAnonymously(userObj.token).catch((error) => {
-                            console.log('error: ', error.code, error.message);
-                        });
-                    } else {
-                        console.log('there is no user stored in async');
-                        // log user in Anonymous, and save user info to async storage
-                        this.props.playAnonymous();
-                    }
-                });
-            }
-        });
-        console.log('now change screens');
-        // Actions.categories();
-        // Actions.admob();
-    }
-    onFbButtonPress() {
-        this.props.loginWithFacebook();
-    }
-    renderFbButton() {
-        // check if user is signed in
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in.
-                // PLAY only navigates to Categories screen
-                // if facebook logged in, display small facebook LOGOUT
-                // else display facebook LOGIN
-                // console.log('user signed in: ', user);
-            } else {
-                // No user is signed in.
-                // PLAY LOGS IN ANONYMOUS
-                // and display facebook LOGIN button, that convert anonymous to fb auth
-                // console.log('no user logged in');
-            }
-        });
-    }
+
     playSound() {
         // get random songname
         const array = this.props.shortsounds;
@@ -240,16 +200,6 @@ class Welcome extends React.Component {
 
         const songNameEncoded = songName.replace(/ /g, '%20');
         new Player('file://' + Config.localChallenges + songNameEncoded).play();
-    }
-    signOut() {
-        console.log('signing out');
-        this.props.signOut();
-    }
-    viewModal() {
-        Strings.setLanguage('it');
-        this.setState({});
-        // this.setState({ okModalText: 'this is some error message' });
-        // this.setState({ okModal: !this.state.okModal });
     }
     renderBabyface() {
         if (this.props.shortsounds) {
@@ -264,17 +214,9 @@ class Welcome extends React.Component {
                 <Spinner style={{ height: 200, width: 200 }} />
             );
     }
+    
     render() {
         // console.log('props ', this.props);
-        // <Icon 
-        //                 name="hand-pointer-o"
-        //                 size={60} 
-        //                 style={{ color: 'white' }}
-        //                 iconStyle={{ color: 'white', backgroundColor: 'white' }}
-        //             />
-                    // <ButtonFb onPress={this.onFbButtonPress.bind(this)}>
-                    //     Login Facebook
-                    // </ButtonFb>
         return (
             <View style={{ flex: 1, backgroundColor: Config.colorPrimary100 }}>
                 <View style={{ flex: 1, justifyContent: 'center', marginTop: 50 }}>
@@ -291,16 +233,22 @@ class Welcome extends React.Component {
                     <Image source={require('../assets/images/title.png')} style={styles.title} resizeMode={Image.resizeMode.contain} />
                    
                    
-                    <Button style={{ flex: 0 }} onPress={this.onPlayPress.bind(this)}>{Strings.play.toUpperCase()}</Button>
+                    <Button onPress={() => Actions.categories()}>{Strings.play.toUpperCase()}</Button>
 
-                    <Button style={{ flex: 0 }} onPress={() => this.setState({ infoModal: !this.state.infoModal })}>
+                    <Button onPress={() => this.setState({ infoModal: !this.state.infoModal })}>
                         {Strings.instructions.toUpperCase()}
                     </Button>
-                    <Text style={{ fontFamily: Config.fontMain }}>OKOKHere is the new text</Text>
-                    <Text style={{ margin: 5, borderWidth: 1, flex: 0 }} onPress={this.viewModal.bind(this)}>
-                        MODAL!!!
-                    </Text>
 
+                    <View style={{ alignItems: 'center', margin: 10 }}>
+                        <LoginButton
+                            readPermissions={['public_profile']}
+                            // readPermissions={["email","public_profile","friends"]}
+                            // publishPermissions={['publish_actions']}
+                            onLoginFinished={this.onFbLoginFinished.bind(this)}
+                            onLogoutFinished={this.onFbLogoutFinished.bind(this)} 
+                        />
+                    </View>
+                    
                     <Text style={{ margin: 5, borderWidth: 1, fontFamily: Config.fontMain }} onPress={this.deleteAsync.bind(this)}>
                         async delete accesories + coins + levels
                     </Text>
@@ -312,20 +260,8 @@ class Welcome extends React.Component {
                     <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.deleteLocalChallengesBlob.bind(this)}>
                         blob delete challenges
                     </Text>
-
-                    <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.signOut.bind(this)}>
-                        SIGN OUT
-                    </Text>
-
+                    
                 </View>
-                
-                <Text style={styles.errorTextStyle}>
-                    {this.props.auth.error}
-                </Text>
-
-                <Text style={styles.errorDetailTextStyle}>
-                    {this.props.auth.errorDetail}
-                </Text>
 
                 <InfoModal
                     visible={this.state.infoModal}
@@ -370,35 +306,14 @@ const styles = StyleSheet.create({
     }
 });
 
-// let strings = new LocalizedStrings({
-//   "en-US":{
-//     how:"How do you want your egg today?",
-//     boiledEgg:"Boiled egg",
-//     softBoiledEgg:"Soft-boiled egg",
-//     choice:"How to choose the egg"
-//   },
-//   en:{
-//     how:"How do you want your egg today?",
-//     boiledEgg:"Boiled egg",
-//     softBoiledEgg:"Soft-boiled egg",
-//     choice:"How to choose the egg"
-//   },
-//   it: {
-//     how:"Come vuoi il tuo uovo oggi?",
-//     boiledEgg:"Uovo sodo",
-//     softBoiledEgg:"Uovo alla coque",
-//     choice:"Come scegliere l'uovo"
-//   }
-// });
-
 const mapStateToProps = state => {
     return { 
         shortsounds: state.shortsounds,
         coins: state.coins,
-        auth: state.auth,
         accessories: state.accessories,
         levels: state.levels,
         gamesounds: state.gamesounds,
+        // auth: state.auth,
         // allChallenges: state.allChallenges,
         // errorDetail, 
         // loading 
@@ -406,9 +321,9 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-    loginWithFacebook,
-    signOut,
-    playAnonymous,
+    // loginWithFacebook,
+    // signOut,
+    // playAnonymous,
     getInitialCoins,
     fetchAllChallenges,
     getInitialAccessories,

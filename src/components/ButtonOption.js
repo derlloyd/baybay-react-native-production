@@ -10,7 +10,7 @@ class ButtonOption extends React.Component {
     // test this as it may allow cheating
     
     render() {
-        const { onPress, correct, disabled, style, textStyle, children } = this.props;
+        const { onPress, correct, disabled, style, children } = this.props;
 
         let renderChildren = children;
 
@@ -31,7 +31,7 @@ class ButtonOption extends React.Component {
                 onPress={onPress} 
                 style={disabled ? styles.buttonStyleDisabled : [styles.buttonStyle, style]}
             >
-                <Text style={[styles.textStyle, textStyle]}>
+                <Text style={styles.textStyle}>
                     {renderChildren.toUpperCase()}
                 </Text>
             </TouchableHighlight>

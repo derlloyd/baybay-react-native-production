@@ -449,6 +449,11 @@ fonts from xcode
 2017-02-27 20:55:35.419 baybay[19628:6767151] Zapfino
 2017-02-27 20:55:35.420 baybay[19628:6767151]  Zapfino
 
+local macbook air keyhash
+ga0RGNYHvNM5d0SLGQfpQWAPGJ8=
+
+android dev keyhash
+dUgWYOkRzglo33e+oayZq9VI6cE=
 
 */
 
