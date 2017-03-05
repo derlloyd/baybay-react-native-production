@@ -5,14 +5,18 @@ import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Player } from 'react-native-audio-toolkit';
+
+const FBSDK = require('react-native-fbsdk');
+
+const { LoginButton, AccessToken } = FBSDK;
 // import LocalizedStrings from 'react-native-localization';
 
 // import * as Animatable from 'react-native-animatable';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button, ButtonFb, Babyface, Confirm, InfoModal, Spinner } from '../components';
 import { 
-    loginWithFacebook, 
-    playAnonymous, 
+    // loginWithFacebook, 
+    // playAnonymous, 
     signOut, 
     getInitialCoins, 
     fetchAllChallenges, 
@@ -192,7 +196,7 @@ class Welcome extends React.Component {
                 console.log('no one signed in, now check...');
                 
                 // check asyncStorage to see if refresh token is there
-                AsyncStorage.getItem('user', (err, userInfo) => {
+                AsyncStorage.getItem('fbAccessToken', (err, userInfo) => {
                     if (userInfo) {
                         const userObj = JSON.parse(userInfo);
                         console.log('user stored in async: ', userObj);
@@ -201,9 +205,9 @@ class Welcome extends React.Component {
                             console.log('error: ', error.code, error.message);
                         });
                     } else {
-                        console.log('there is no user stored in async');
+                        console.log('there is no user stored in async, do not login');
                         // log user in Anonymous, and save user info to async storage
-                        this.props.playAnonymous();
+                        // this.props.playAnonymous();
                     }
                 });
             }
@@ -211,26 +215,6 @@ class Welcome extends React.Component {
         console.log('now change screens');
         // Actions.categories();
         // Actions.admob();
-    }
-    onFbButtonPress() {
-        this.props.loginWithFacebook();
-    }
-    renderFbButton() {
-        // check if user is signed in
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                // User is signed in.
-                // PLAY only navigates to Categories screen
-                // if facebook logged in, display small facebook LOGOUT
-                // else display facebook LOGIN
-                // console.log('user signed in: ', user);
-            } else {
-                // No user is signed in.
-                // PLAY LOGS IN ANONYMOUS
-                // and display facebook LOGIN button, that convert anonymous to fb auth
-                // console.log('no user logged in');
-            }
-        });
     }
     playSound() {
         // get random songname
@@ -264,6 +248,39 @@ class Welcome extends React.Component {
                 <Spinner style={{ height: 200, width: 200 }} />
             );
     }
+    onFbLoginFinished(error, result) {
+        if (error) {
+            console.log('facebook login has error: ', result.error);
+        } else if (result.isCancelled) {
+            console.log('facebook login cancelled.');
+        } else {
+            AccessToken.getCurrentAccessToken().then(
+                (data) => {
+                    console.log('facebook logged in success, here is access token: ', data.accessToken.toString());
+
+                    const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken.toString());
+                    firebase.auth().signInWithCredential(credential).then((user) => {
+                        console.log('Firebase Sign In Success', user);
+                    }, (err) => {
+                        console.log('Firebase Sign In Error', err);
+                    });
+
+                    // const auth = firebase.auth();
+                    // // const provider = firebase.auth.FacebookAuthProvider;
+                    // const provider = new firebase.auth.FacebookAuthProvider();
+                    // const credential = provider.credential(data.accessToken);
+                    // auth.signInWithCredential(credential);
+                    // AsyncStorage.setItem('fbAccessToken', data.accessToken.toString());
+                    // now login firebase
+                }
+            );
+        }
+    }
+    onFbLogoutFinished() {
+        console.log('facebook logged out.');
+        // firebase logout also
+        firebase.auth().signOut().then(() => console.log('firebase logged out'));
+    }
     render() {
         // console.log('props ', this.props);
         // <Icon 
@@ -296,6 +313,15 @@ class Welcome extends React.Component {
                     <Button style={{ flex: 0 }} onPress={() => this.setState({ infoModal: !this.state.infoModal })}>
                         {Strings.instructions.toUpperCase()}
                     </Button>
+
+                    <LoginButton
+                        readPermissions={['public_profile']}
+                        // readPermissions={["email","public_profile","friends"]}
+                        // publishPermissions={['publish_actions']}
+                        onLoginFinished={this.onFbLoginFinished.bind(this)}
+                        onLogoutFinished={this.onFbLogoutFinished.bind(this)} 
+                    />
+
                     <Text style={{ fontFamily: Config.fontMain }}>OKOKHere is the new text</Text>
                     <Text style={{ margin: 5, borderWidth: 1, flex: 0 }} onPress={this.viewModal.bind(this)}>
                         MODAL!!!
@@ -316,6 +342,7 @@ class Welcome extends React.Component {
                     <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.signOut.bind(this)}>
                         SIGN OUT
                     </Text>
+                    
 
                 </View>
                 
@@ -344,6 +371,21 @@ class Welcome extends React.Component {
     }
 }
 
+                        //     (error, result) => {
+                        //         if (error) {
+                        //             console.log("login has error: " + result.error);
+                        //         } else if (result.isCancelled) {
+                        //             console.log("login is cancelled.");
+                        //         } else {
+                        //             AccessToken.getCurrentAccessToken().then(
+                        //                 (data) => {
+                        //                     AsyncStorage.setItem('fbAccessToken', data.accessToken.toString());
+                        //                     console.log('logged in, here is access token: ', data.accessToken.toString());
+                        //                 }
+                        //             );
+                        //         }
+                        //     }
+                        // }
 const styles = StyleSheet.create({
     backdropImage: {
         position: 'absolute',
@@ -406,9 +448,9 @@ const mapStateToProps = state => {
 };
 
 export default connect(mapStateToProps, {
-    loginWithFacebook,
+    // loginWithFacebook,
     signOut,
-    playAnonymous,
+    // playAnonymous,
     getInitialCoins,
     fetchAllChallenges,
     getInitialAccessories,
