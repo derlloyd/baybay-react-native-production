@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ListView, StyleSheet, LayoutAnimation, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, LayoutAnimation, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -52,7 +52,6 @@ class Categories extends React.Component {
         return renderedCategories;
     }
     buyLevel(level) {
-        // console.log('clicked level ', level);
         // check if user has enough coins
         if (this.props.coins >= level.levelPrice) {
             // if yes, popup modal to confirm, add level to state
@@ -64,8 +63,7 @@ class Categories extends React.Component {
     }
     
     renderCategoryCard(category) {
-        // this is renderRow of the main ListView
-        // console.log('in renderCategoryCard: ', this.props);
+        // main category render
 
         // when user clicks an expanded level
         const clickLevel = (level) => {
@@ -148,9 +146,9 @@ class Categories extends React.Component {
             if (this.props.selected.category) {
                 if (category.categoryId === this.props.selected.category.categoryId) {
                     return (
-                        <CardSection style={styles.categoryExpandedSection}>
+                        <View style={styles.categoryExpandedSection}>
                             {renderLevels}
-                        </CardSection>
+                        </View>
                     );
                 }
             }
@@ -162,16 +160,16 @@ class Categories extends React.Component {
                 key={category.categoryId} 
                 onPress={() => this.props.categoryUpdate(category, this.props.selected.category)}
             >
-                    <Card image={category.categoryImage} style={styles.categoryStyle}>
+                    <Card style={styles.categoryStyle}>
                         
-                        <CardSection style={styles.categoryTopSection}>
+                        <View style={styles.categoryTopSection}>
                             <Text style={styles.categoryTitleStyle}>
                                 {category.categoryName}
                             </Text>
                             <Text style={styles.categoryDescriptionStyle}>
                                 {category.categoryDescription}
                             </Text>
-                        </CardSection>
+                        </View>
 
                         {expandInfo()}
 
@@ -181,7 +179,7 @@ class Categories extends React.Component {
     }
     
     render() {
-        // console.log(this.props);
+        console.log(this.props);
         return (
             <View style={styles.screenContainer}>
 
@@ -208,13 +206,6 @@ class Categories extends React.Component {
                 />
             </View>       
         );
-                //     Insufficient coins. Would you like to buy more?
-                // </Confirm>
-                // </Confirm>
-                    // {<Text>Are you sure you want to buy </Text>}
-                    // {<Text style={{ color: Config.colorAccent700 }}> {this.state.level.levelName} </Text>}
-                    //  for {this.state.level.levelPrice} {<Icon name={Config.coinIconName} size={20} />} ?
-                    // {<Text style={styles.categoryTitleStyle}> {this.props.selected.category.categoryName}</Text>}
     }
 }
 
@@ -224,16 +215,25 @@ const styles = StyleSheet.create({
         backgroundColor: Config.colorPrimary100,
     },
     categoryStyle: { 
+        // alignSelf: 'stretch',
+        flexDirection: 'row',
         // backgroundColor: 'red',
-        // borderRadius: 45,
+        borderRadius: 5,
         padding: 8,
         borderWidth: 1,
         borderColor: Config.colorPrimary200,
         // backgroundColor: Config.colorPrimary700,
         backgroundColor: 'white',
+        marginLeft: 5,  // space between l and r
+        marginRight: 5,
+        marginTop: 10   // space between cards
     },
     categoryTopSection: { 
         flexDirection: 'column',
+        justifyContent: 'flex-start',
+        // flexDirection: 'row',
+        // borderColor: '#ddd',
+        position: 'relative'
     },
     categoryTitleStyle: {
         color: Config.colorPrimary900,
@@ -318,6 +318,7 @@ const mapStateToProps = state => {
         selected: state.selected,
         coins: state.coins,
         levels: state.levels,
+        auth: state.auth,
     };
 };
 

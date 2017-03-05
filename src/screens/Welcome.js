@@ -8,7 +8,7 @@ import { Player } from 'react-native-audio-toolkit';
 // import LocalizedStrings from 'react-native-localization';
 
 // import * as Animatable from 'react-native-animatable';
-import Icon from 'react-native-vector-icons/FontAwesome';
+// import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button, ButtonFb, Babyface, Confirm, InfoModal, Spinner } from '../components';
 import { 
     loginWithFacebook, 
@@ -55,6 +55,8 @@ class Welcome extends React.Component {
 
         this.checkInternet();
 
+        this.checkForUser();
+
         this.loadAsyncData();
 
         this.clearLongSounds();
@@ -69,6 +71,21 @@ class Welcome extends React.Component {
         // RNFetchBlob.fs.unlink(Config.localChallenges).then(() => {
         //     console.log('cleared: ', Config.localChallenges);
         // });
+    }
+    checkForUser() {
+      
+
+        // console.log('loading firebase');
+        // get firebase info from async storage, if they exist
+        // AsyncStorage.getItem('firebase*', (err, obj) => {
+        //     if (obj) {
+        //         console.log('retrieved : ', JSON.parse(obj));
+        //         // this.props.getInitialAccessories(JSON.parse(accessories));
+        //     }
+        //     console.log('firebase err, ', err);
+        // });
+
+
     }
     loadAsyncData() {
         // get users' coins from async storage, if they exist
@@ -89,7 +106,7 @@ class Welcome extends React.Component {
         // get users' completed challenges from async storage, if they exist
         AsyncStorage.getItem('challenges', (err, challenges) => {
             if (challenges) {
-                // console.log('chalenges retrieved : ', JSON.parse(challenges));
+                console.log('chalenges retrieved : ', JSON.parse(challenges));
                 this.props.getInitialChallenges(JSON.parse(challenges));
             }
         });
@@ -158,13 +175,42 @@ class Welcome extends React.Component {
         AsyncStorage.removeItem('levels');
         AsyncStorage.removeItem('coins');
         AsyncStorage.removeItem('accessories');
+        AsyncStorage.removeItem('user');
+        AsyncStorage.removeItem('user_data');
 
         console.log('deleted accessories and coins, now reload');
     }
     onPlayPress() {
+          firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                user.getToken().then(data => console.log(data));
+                // console.log('get token ', user.getToken());
+                // User is signed in, go to next screen
+                console.log('signed in firebase OK!!!!!!!!!!!!!!!!!!: ', user);
+            } else {
+                // No user is signed in.
+                console.log('no one signed in, now check...');
+                
+                // check asyncStorage to see if refresh token is there
+                AsyncStorage.getItem('user', (err, userInfo) => {
+                    if (userInfo) {
+                        const userObj = JSON.parse(userInfo);
+                        console.log('user stored in async: ', userObj);
+                        // login firebase with access token
+                        firebase.auth().signInAnonymously(userObj.token).catch((error) => {
+                            console.log('error: ', error.code, error.message);
+                        });
+                    } else {
+                        console.log('there is no user stored in async');
+                        // log user in Anonymous, and save user info to async storage
+                        this.props.playAnonymous();
+                    }
+                });
+            }
+        });
+        console.log('now change screens');
+        // Actions.categories();
         // Actions.admob();
-        Actions.categories();
-        // this.props.playAnonymous();
     }
     onFbButtonPress() {
         this.props.loginWithFacebook();
@@ -265,6 +311,10 @@ class Welcome extends React.Component {
 
                     <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.deleteLocalChallengesBlob.bind(this)}>
                         blob delete challenges
+                    </Text>
+
+                    <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.signOut.bind(this)}>
+                        SIGN OUT
                     </Text>
 
                 </View>

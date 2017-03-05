@@ -55,7 +55,7 @@ const fetchBlob = (filename, id, localpath, remotepath, callback) => {
                 .fetch('GET', remotepath + filenameEncoded, {
                 })
                 .then((res) => {
-                    // console.log('file saved to ', res.path());
+                    console.log('file saved to ', res.path());
                     // add filename to localstorage to have a list of loaded babysounds
                     if (localpath === Config.localChallenges) {
                         AsyncStorage.mergeItem('shortsounds', JSON.stringify({ [id]: filename }));
