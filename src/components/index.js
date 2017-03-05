@@ -3,7 +3,6 @@ export * from './BannerSpace';
 export * from './Button';
 export * from './ButtonNext';
 export * from './ButtonOption';
-export * from './ButtonFb';
 export * from './Card';
 export * from './CardSection';
 export * from './Coins';
