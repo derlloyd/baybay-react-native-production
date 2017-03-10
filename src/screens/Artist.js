@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import { View, LayoutAnimation, StyleSheet, Image, AsyncStorage } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -6,7 +7,7 @@ import { connect } from 'react-redux';
 import { Player } from 'react-native-audio-toolkit';
 
 import { Header, Spinner, ButtonOption, Babyface, Confirm, HelpButton, BannerSpace } from '../components';
-import { fetchChallengeShortSound, fetchChallengeLongSound, removeWrongOption } from '../actions';
+import { fetchChallengeShortSound, fetchChallengeLongSound, removeWrongOption, saveUserInfoToFirebase } from '../actions';
 import Config from '../Config';
 import Strings from '../Strings';
 
@@ -28,6 +29,12 @@ class Artist extends React.Component {
         // load short and long mp3s, pass the challenge object
         this.props.fetchChallengeShortSound(this.props.selected.challenge);
         this.props.fetchChallengeLongSound(this.props.selected.challenge);
+    }
+    componentWillReceiveProps(nextProps) {
+        // if user is signed in firebase, save updated user data to firebase
+
+        const user = firebase.auth().currentUser;
+        if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
     }
 
     clickOption(option) {
@@ -260,6 +267,7 @@ export default connect(mapStateToProps, {
     fetchChallengeShortSound, 
     fetchChallengeLongSound, 
     removeWrongOption, 
+    saveUserInfoToFirebase,
 })(Artist);
 
 

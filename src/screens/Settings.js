@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import { View, Text, Switch, Image, TouchableOpacity, ScrollView, NativeModules, Platform, AlertIOS } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -9,7 +10,7 @@ import * as Animatable from 'react-native-animatable';
 
 import { Babyface, Button, Confirm, SettingsHeader, Spinner } from '../components';
 import Config from '../Config';
-import { toggleSwitchAccessory, coinsSubtract } from '../actions';
+import { toggleSwitchAccessory, coinsSubtract, saveUserInfoToFirebase } from '../actions';
 
 const InAppBilling = require('react-native-billing');
 
@@ -34,6 +35,46 @@ class Settings extends React.Component {
         } else {
             this.getAndroidPurchaseOptions();
         }
+    }
+    componentWillReceiveProps(nextProps) {
+        // if user is signed in firebase, save updated user data to firebase
+
+        const user = firebase.auth().currentUser;
+        if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
+    }
+    onAcceptBuyModal() {
+        // user accepts to buy, execute main action
+        // dispatch action to subtract coins AND set value to true
+        this.props.toggleSwitchAccessory(this.state.accessory.name, true);
+        this.props.coinsSubtract(this.state.accessory.cost);
+        // then close modal
+        this.setState({ buyModal: false });
+    }
+    onDeclineBuyModal() {
+        // hide modal when user clicks NO
+        this.setState({ buyModal: false });
+    }
+
+    onAcceptCoinsModal() {
+        // accept to buy more coins, go to accessories screen
+        this.setState({ coinsModal: false });
+        this.setState({ buyCoinsView: true });
+    }
+
+    onDeclineCoinsModal() {
+        this.setState({ coinsModal: false });
+    }
+    onAcceptInAppModal() {
+        if (Platform.OS === 'ios') {
+            this.purchaseIosProduct();
+        } else {
+            this.purchaseAndroidProduct();
+        }
+
+        this.setState({ inAppModal: false });
+    }
+    onDeclineInAppModal() {
+        this.setState({ inAppModal: false });
     }
     async getAndroidPurchaseOptions() {
         const products = [
@@ -96,32 +137,10 @@ class Settings extends React.Component {
         });
     }
 
-    onAcceptBuyModal() {
-        // user accepts to buy, execute main action
-        // dispatch action to subtract coins AND set value to true
-        this.props.toggleSwitchAccessory(this.state.accessory.name, true);
-        this.props.coinsSubtract(this.state.accessory.cost);
-        // then close modal
-        this.setState({ buyModal: false });
-    }
-
-    onDeclineBuyModal() {
-        // hide modal when user clicks NO
-        this.setState({ buyModal: false });
-    }
-
-    onAcceptCoinsModal() {
-        // accept to buy more coins, go to accessories screen
-        this.setState({ coinsModal: false });
-        this.setState({ buyCoinsView: true });
-    }
-
-    onDeclineCoinsModal() {
-        this.setState({ coinsModal: false });
-    }
     closeBabyModal() {
         this.setState({ babyModal: false });
     }
+  
     buyAccessory(accessory) {
         // check if user has enough coins
         if (this.props.coins >= accessory.cost) {
@@ -135,12 +154,11 @@ class Settings extends React.Component {
     buyCoins(buyOption) {
         this.setState({ inAppModal: !this.state.inAppModal, buyOption });
     }
+    
     purchaseIosProduct() {
         const productIdentifier = this.state.buyOption.identifier;
 
         InAppUtils.purchaseProduct(productIdentifier, (error, response) => {
-        // NOTE for v3.0: User can cancel the payment which will be availble as error object here.
-
             if (error) {
                 AlertIOS.alert('Purchase Not Completed', error.message);
             }
@@ -173,18 +191,6 @@ class Settings extends React.Component {
         //     .catch((err) => {
         //     console.log(err);
         // });
-    }
-    onAcceptInAppModal() {
-        if (Platform.OS === 'ios') {
-            this.purchaseIosProduct();
-        } else {
-            this.purchaseAndroidProduct();
-        }
-
-        this.setState({ inAppModal: false });
-    }
-    onDeclineInAppModal() {
-        this.setState({ inAppModal: false });
     }
 
     playSuccessSound() {
@@ -241,6 +247,9 @@ class Settings extends React.Component {
                 </View>
             );
         }
+    }
+    reverseCoinView() {
+        this.setState({ buyCoinsView: !this.state.buyCoinsView });
     }
     renderAccessoryTable() {
         // create a string of JSX
@@ -335,9 +344,7 @@ class Settings extends React.Component {
         
         return rendered;
     }
-    reverseCoinView() {
-        this.setState({ buyCoinsView: !this.state.buyCoinsView });
-    }
+
     render() {
         // console.log('main props.accessories ', this.props.accessories);
         const renderAccessoryBabyface = (
@@ -603,4 +610,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, { toggleSwitchAccessory, coinsSubtract })(Settings);
+export default connect(mapStateToProps, { toggleSwitchAccessory, saveUserInfoToFirebase, coinsSubtract })(Settings);

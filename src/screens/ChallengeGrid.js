@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -6,7 +7,7 @@ import { connect } from 'react-redux';
 import { Player } from 'react-native-audio-toolkit';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Header, BannerSpace } from '../components';
-import { challengeUpdate, resetShortSound } from '../actions';
+import { challengeUpdate, resetShortSound, saveUserInfoToFirebase } from '../actions';
 import Config from '../Config';
 
 class ChallengeGrid extends React.Component {
@@ -19,6 +20,12 @@ class ChallengeGrid extends React.Component {
     componentDidMount() {
         // reset value of props.selected.shortSoundLoaded to false
         this.props.resetShortSound();
+    }
+    componentWillReceiveProps(nextProps) {
+        // if user is signed in firebase, save updated user data to firebase
+
+        const user = firebase.auth().currentUser;
+        if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
     }
     getChallenges() {
         // get challenges of this level out of props, create new array of objects
@@ -102,6 +109,7 @@ class ChallengeGrid extends React.Component {
         );
     }
     render() {
+        // console.log(this.props);
         return (
             <View style={styles.screenContainer}>
                 
@@ -206,4 +214,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, { challengeUpdate, resetShortSound })(ChallengeGrid);
+export default connect(mapStateToProps, { challengeUpdate, resetShortSound, saveUserInfoToFirebase })(ChallengeGrid);

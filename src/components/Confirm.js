@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
         fontFamily: Config.fontMain,
         // textAlign: 'center',
         lineHeight: 40,
-        // color: 'blue',
+        color: Config.colorPrimary,
     },
     buttonContainer: {
         flexDirection: 'row',

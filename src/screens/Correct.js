@@ -1,4 +1,5 @@
 import React from 'react';
+import firebase from 'firebase';
 import { View, Text, TouchableOpacity, Platform, Image, AsyncStorage, Linking } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
@@ -9,7 +10,7 @@ import * as Animatable from 'react-native-animatable';
 import { ButtonNext, Babyface, BannerSpace, Header, Confirm } from '../components';
 import Config from '../Config';
 import Strings from '../Strings';
-import { rewardChallenge, saveChallenge, challengeUpdate } from '../actions';
+import { rewardChallenge, saveChallenge, challengeUpdate, saveUserInfoToFirebase } from '../actions';
 
 const animationSchemaSwing = {
   0: {
@@ -119,6 +120,12 @@ class Correct extends React.Component {
         // in both cases, save challenge as true, will render checkmark
         this.props.saveChallenge(id, true);
         this.playSuccessSound();
+    }
+    componentWillReceiveProps(nextProps) {
+        // if user is signed in firebase, save updated user data to firebase
+
+        const user = firebase.auth().currentUser;
+        if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
     }
 
     playSuccessSound() {
@@ -534,4 +541,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, { rewardChallenge, saveChallenge, challengeUpdate })(Correct);
+export default connect(mapStateToProps, { rewardChallenge, saveChallenge, challengeUpdate, saveUserInfoToFirebase })(Correct);

@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, LayoutAnimation, TouchableOpacity } from 'react-native';
+import firebase from 'firebase';
+import { View, Text, StyleSheet, ScrollView, LayoutAnimation, TouchableOpacity } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Header, CardSection, Card, Spinner, Confirm } from '../components';
-import { fetchAllCategories, categoryUpdate, levelUpdate, coinsSubtract, saveLevel, saveInitialLevels } from '../actions';
+import { Header, Card, Spinner, Confirm } from '../components';
+import { fetchAllCategories, saveUserInfoToFirebase, categoryUpdate, levelUpdate, coinsSubtract, saveLevel, saveInitialLevels } from '../actions';
 import Config from '../Config';
 
 class Categories extends React.Component {
@@ -12,6 +13,15 @@ class Categories extends React.Component {
 
     componentWillMount() {
         this.props.fetchAllCategories();
+        
+        const user = firebase.auth().currentUser;
+        if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props); } 
+    }
+    componentWillReceiveProps(nextProps) {
+        // if user is signed in firebase, save updated user data to firebase
+        console.log('rec3eiving props....');
+        const user = firebase.auth().currentUser;
+        if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
     }
     componentWillUpdate() {
         // animation to category when clicked
@@ -36,16 +46,19 @@ class Categories extends React.Component {
     onAcceptCoinsModal() {
         // accept to buy more coins, go to accessories screen
         this.setState({ coinsModal: false });
-        Actions.settings_tabs();                         // TODO check routing
+        Actions.settings_tabs();
     }
 
     onDeclineCoinsModal() {
         this.setState({ coinsModal: false });
     }
     getCategories() {
+        // if categories not loaded into props yet, render Spinner
         if (!this.props.allCategories[0]) {
             return (
-                <Spinner size="large" />
+                <View style={styles.spinner}>
+                    <Spinner size="large" />
+                </View>
             );
         }
         const renderedCategories = this.props.allCategories.map(this.renderCategoryCard.bind(this));
@@ -179,7 +192,7 @@ class Categories extends React.Component {
     }
     
     render() {
-        console.log(this.props);
+        // console.log(this.props);
         return (
             <View style={styles.screenContainer}>
 
@@ -188,9 +201,9 @@ class Categories extends React.Component {
                     title="" 
                     coins={this.props.coins} 
                 />
-
-                {this.getCategories()}
-
+                <ScrollView>
+                    {this.getCategories()}
+                </ScrollView>
                 <Confirm
                     visible={this.state.buyModal}
                     onAccept={this.onAcceptBuyModal.bind(this)}
@@ -213,6 +226,10 @@ const styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
         backgroundColor: Config.colorPrimary100,
+    },
+    spinner: {
+        // flex: 1,
+        marginTop: Config.deviceHeight / 3,
     },
     categoryStyle: { 
         // alignSelf: 'stretch',
@@ -318,8 +335,9 @@ const mapStateToProps = state => {
         selected: state.selected,
         coins: state.coins,
         levels: state.levels,
-        auth: state.auth,
+        // categories: state.categories,
+        // auth: state.auth,
     };
 };
 
-export default connect(mapStateToProps, { fetchAllCategories, categoryUpdate, saveLevel, levelUpdate, coinsSubtract, saveInitialLevels })(Categories);
+export default connect(mapStateToProps, { fetchAllCategories, saveUserInfoToFirebase, categoryUpdate, saveLevel, levelUpdate, coinsSubtract, saveInitialLevels })(Categories);
