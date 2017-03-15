@@ -90,7 +90,7 @@ class Wrong extends React.Component {
     }
     playCrySound() {
         // get random songname
-        const array = this.props.gamesounds[3].urls;
+        const array = this.props.gamesounds[2].urls;
         const randomIndex = Math.floor(Math.random() * array.length);
         const songName = array[randomIndex].url;
         const songNameEncoded = songName.replace(/ /g, '%20');
@@ -104,7 +104,7 @@ class Wrong extends React.Component {
     }
     playMidSuccessSound() {
         // get random songname
-        const array = this.props.gamesounds[1].urls;
+        const array = this.props.gamesounds[0].urls;
         const randomIndex = Math.floor(Math.random() * array.length);
         const songName = array[randomIndex].url;
         const songNameEncoded = songName.replace(/ /g, '%20');
@@ -166,6 +166,25 @@ class Wrong extends React.Component {
             </Animatable.View>
         );
     }
+    renderWrongMessage() {
+        // show message until clicked 3 times
+        if (this.state.babyClicks <= 3) {
+            return (
+                <Animatable.View 
+                    // animation='fadeOut'
+                >
+                    <Text style={styles.textMessage}>{Strings.youreWrong.toUpperCase()}</Text>
+                </Animatable.View>
+            );
+        }
+        return (
+                <Animatable.View 
+                    animation='fadeOut'
+                >
+                    <Text style={styles.textMessage}>{Strings.youreWrong.toUpperCase()}</Text>
+                </Animatable.View>
+            );
+    }
    
     render() {
         // console.log(this.props);
@@ -194,7 +213,7 @@ class Wrong extends React.Component {
                 
                 <View style={styles.container}>
 
-                    <Text style={styles.textMessage}>{Strings.youreWrong.toUpperCase()}</Text>
+                    {this.renderWrongMessage()}
                     
                 </View>
 
@@ -216,6 +235,7 @@ class Wrong extends React.Component {
         );
     }
 }
+                    // <Text style={styles.textMessage}>{Strings.youreWrong.toUpperCase()}</Text>
                         // <ButtonItunes onPress={this.onPressItunesButton.bind(this)} />
 
 const styles = {
@@ -296,7 +316,8 @@ const styles = {
         padding: 3,
         backgroundColor: 'transparent',
         fontSize: 35,
-        // fontWeight: 'bold',
+        alignItems: 'center',
+        textAlign: 'center',
         fontFamily: Config.fontMain,
         color: Config.colorAccent700,
         textShadowColor: Config.colorPrimary900,

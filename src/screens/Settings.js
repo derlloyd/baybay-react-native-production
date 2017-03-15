@@ -109,6 +109,7 @@ class Settings extends React.Component {
         }
     }
     getIOSPurchaseOptions() {
+        // product ids from itunes connect
         const products = [
             'com.BayBay.Purchase.Coin1000',
             'com.BayBay.Purchase.Coin2500',
@@ -195,7 +196,7 @@ class Settings extends React.Component {
 
     playSuccessSound() {
         // get random songname
-        const array = this.props.gamesounds[1].urls;
+        const array = this.props.gamesounds[0].urls;
         const randomIndex = Math.floor(Math.random() * array.length);
         const songName = array[randomIndex].url;
         const songNameEncoded = songName.replace(/ /g, '%20');

@@ -60,7 +60,7 @@ class Artist extends React.Component {
 
     playMidSuccessSound() {
         // get random songname
-        const array = this.props.gamesounds[1].urls;
+        const array = this.props.gamesounds[0].urls;
         const randomIndex = Math.floor(Math.random() * array.length);
         const songName = array[randomIndex].url;
         const songNameEncoded = songName.replace(/ /g, '%20');

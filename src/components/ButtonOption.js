@@ -43,6 +43,7 @@ class ButtonOption extends React.Component {
 const styles = {
     textStyle: {
         alignSelf: 'center',
+        textAlign: 'center',
         color: 'white',   // '#007aff'
         fontSize: 16,
         // fontWeight: 'bold',

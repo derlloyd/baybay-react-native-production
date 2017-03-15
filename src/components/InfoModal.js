@@ -100,7 +100,7 @@ class InfoModal extends React.Component {
                     <Carousel
                         sliderWidth={Config.deviceWidth}
                         itemWidth={itemWidth}
-                        firstItem={1}
+                        firstItem={0}
                         inactiveSlideScale={0.9}
                         // inactiveSlideOpacity={0.6}
                         enableMomentum={true}

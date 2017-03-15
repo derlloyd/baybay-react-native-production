@@ -11,7 +11,6 @@ import * as Animatable from 'react-native-animatable';
 // path to device data
 // file:///Users/dereklloyd/Library/Developer/CoreSimulator/Devices/81C10E70-AD5A-4937-B5E3-4BBC8B093C79/data/Containers/Data/Application/4E43317C-90AF-4ED4-8016-DAD891CF7215/Documents/RCTAsyncLocalStorage_V1/manifest.json
 
-// import * as Animatable from 'react-native-animatable';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 import { ButtonPlay, Babyface, Confirm, InfoModal, Spinner } from '../components';
 import { 
@@ -38,12 +37,26 @@ const FBSDK = require('react-native-fbsdk');
 
 const { LoginButton, AccessToken } = FBSDK;
 
+const animationSchema = {
+  0: {
+    // rotateZ: '0deg',
+    opacity: 0.75,
+  },
+  0.5: {
+    // rotateZ: '0deg',
+    opacity: 1,
+  },
+  1: {
+    // rotateZ: '22.5deg',
+    opacity: 0.75,
+  },
+};
 // react-native-flags to change languages
 
 // const title = require('../assets/images/title.png');
 
 class Welcome extends React.Component {
-    state = { okModal: false, okModalText: 'ok', infoModal: false }
+    state = { okModal: false, okModalText: 'ok', infoModal: false, babyClicks: 0 }
 
     componentWillMount() {
         // hide status bar for all scenes
@@ -319,6 +332,10 @@ class Welcome extends React.Component {
         RNFetchBlob.fs.unlink(Config.localChallenges).then(() => {
             console.log('cleared: ', Config.localChallenges);
         });
+        // delete gamesounds
+        RNFetchBlob.fs.unlink(Config.localGamesounds).then(() => {
+            console.log('cleared: ', Config.localGamesounds);
+        });
     }
     deleteAsync() {
         AsyncStorage.removeItem('levels');
@@ -333,6 +350,7 @@ class Welcome extends React.Component {
     }
 
     playSound() {
+        this.setState({ babyClicks: this.state.babyClicks + 1 });
         // get random songname to play on babyface press
         const array = this.props.shortsounds;
         const randomIndex = Math.floor(Math.random() * array.length);
@@ -354,9 +372,43 @@ class Welcome extends React.Component {
                 <Spinner style={{ height: 200, width: 200 }} />
             );
     }
-    
+    renderClickMessage() {
+        // show message until clicked 3 times
+        if (this.state.babyClicks < 1) {
+            return (
+                <Animatable.View 
+                        animation={animationSchema}
+                        iterationCount='infinite'
+                        style={styles.messageContainer}
+                >
+                    <Text style={styles.messageText}>
+                        {Strings.clickBayBayToHearHimSing}
+                    </Text>
+                </Animatable.View>
+            );
+        }
+        return (
+                <Animatable.View 
+                    animation='fadeOut'
+                    style={styles.messageContainer}
+                >
+                    <Text style={styles.messageText}>
+                        {Strings.clickBayBayToHearHimSing}
+                    </Text>
+                </Animatable.View>
+            );
+    }
     render() {
         // console.log('props ', this.props);
+                    // {/*<Animatable.View 
+                    //     animation={animationSchema}
+                    //     iterationCount='infinite'
+                    //     style={styles.messageContainer}
+                    // >
+                    //     <Text style={styles.messageText}>
+                    //         {Strings.clickBayBayToHearHimSing}
+                    //     </Text>
+                    // </Animatable.View>*/}
         return (
             <View style={{ flex: 1, backgroundColor: Config.colorPrimary200 }}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
@@ -376,6 +428,8 @@ class Welcome extends React.Component {
                     <View style={{ alignItems: 'center', flexGrow: 1 }}>
                         {this.renderBabyface()}
                     </View>
+
+                    {this.renderClickMessage()}
 
                     <Image source={require('../assets/images/title.png')} style={styles.title} resizeMode={Image.resizeMode.contain} />
                    
@@ -398,13 +452,6 @@ class Welcome extends React.Component {
                         />
                     </View>
                     
-                    <Text style={{ margin: 5, borderWidth: 1, fontFamily: Config.fontMain }} onPress={this.deleteAsync.bind(this)}>
-                        clear asyncStorage
-                    </Text>
-                    
-                    <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.deleteLocalChallengesBlob.bind(this)}>
-                        blob delete challenges short and long
-                    </Text>
                     
                 </View>
 
@@ -424,6 +471,13 @@ class Welcome extends React.Component {
         );
     }
 }
+                    // {/*<Text style={{ margin: 5, borderWidth: 1, fontFamily: Config.fontMain }} onPress={this.deleteAsync.bind(this)}>
+                    //     clear asyncStorage
+                    // </Text>
+                    
+                    // <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.deleteLocalChallengesBlob.bind(this)}>
+                    //     blob delete challenges short and long and gamesounds
+                    // </Text>*/}
 
 const styles = StyleSheet.create({
     backdropImage: {
@@ -438,6 +492,25 @@ const styles = StyleSheet.create({
         // height: Config.deviceWidth / 2 * 3, //ratio of height/width is 3/2
         height: Config.deviceHeight,
         bottom: 0,
+    },
+    messageContainer: {
+        // margin: 5,
+        borderWidth: 2,
+        borderColor: Config.colorPrimary, 
+        borderRadius: Config.babyfaceDimension / 4,
+        backgroundColor: Config.colorPrimary100,
+        padding: 10,
+        position: 'absolute', 
+        right: 5, 
+        top: Config.babyfaceDimension * 3 / 4,
+        width: Config.babyfaceDimension / 2,
+    },
+    messageText: {
+        backgroundColor: 'transparent',
+        color: Config.colorPrimary, 
+        textAlign: 'center',
+        fontFamily: Config.fontMain,
+        // fontSize: 10,
     },
     errorTextStyle: {
         marginTop: 20,

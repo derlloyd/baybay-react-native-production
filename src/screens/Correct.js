@@ -171,7 +171,7 @@ class Correct extends React.Component {
     }
     playSuccessSound() {
         // get random songname
-        const array = this.props.gamesounds[2].urls;
+        const array = this.props.gamesounds[1].urls;
         const randomIndex = Math.floor(Math.random() * array.length);
         const songName = array[randomIndex].url;
         const songNameEncoded = songName.replace(/ /g, '%20');
@@ -201,7 +201,11 @@ class Correct extends React.Component {
         this.setState({ dance: false });
         this.longSound.destroy();
     }
-        
+    
+    onAcceptConfirmOKModal() {
+        this.setState({ confirmOkModal: false });
+    }
+
     playChallengeBabySound() {
         // stop if currently playing
         if (this.shortSound) {
@@ -279,10 +283,6 @@ class Correct extends React.Component {
                 />
             </Animatable.View>
         );
-    }
-
-    onAcceptConfirmOKModal() {
-        this.setState({ confirmOkModal: false });
     }
 
     render() {
