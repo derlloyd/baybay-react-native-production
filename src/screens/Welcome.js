@@ -6,10 +6,14 @@ import { connect } from 'react-redux';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Player } from 'react-native-audio-toolkit';
 // import LocalizedStrings from 'react-native-localization';
+import * as Animatable from 'react-native-animatable';
+
+// path to device data
+// file:///Users/dereklloyd/Library/Developer/CoreSimulator/Devices/81C10E70-AD5A-4937-B5E3-4BBC8B093C79/data/Containers/Data/Application/4E43317C-90AF-4ED4-8016-DAD891CF7215/Documents/RCTAsyncLocalStorage_V1/manifest.json
 
 // import * as Animatable from 'react-native-animatable';
 // import Icon from 'react-native-vector-icons/FontAwesome';
-import { Button, Babyface, Confirm, InfoModal, Spinner } from '../components';
+import { ButtonPlay, Babyface, Confirm, InfoModal, Spinner } from '../components';
 import { 
     // loginWithFacebook, 
     // playAnonymous, 
@@ -53,15 +57,6 @@ class Welcome extends React.Component {
         // load challenges objects to redux state
         this.props.fetchAllChallenges();
 
-        // firebase.auth().onAuthStateChanged((user) => {
-        //     if (user) {
-        //         console.log('Firebase signed in, user: ', user);
-        //     } else {
-        //         console.log('No firebase user.');
-        //         // No user is signed in.
-        //     }
-        // });
-
         // babysounds for face onPress
         this.props.fetchIntroBabysounds();
 
@@ -100,23 +95,12 @@ class Welcome extends React.Component {
                                 console.log('data in firebase found, load it');
                                 this.getFirebaseData(user.uid);
                             }
-                            // AsyncStorage.mergeItem('coins', JSON.stringify(snapshot.val()));
                         });
-                        // this.getFirebaseData(user.uid);
-                        // const asyncObj = this.getAsyncData();
-                        // const merged = { ...firebaseObj, ...asyncObj };
-                        // console.log('retrieved objects ', firebaseObj, asyncObj, merged);
-                        // merge firebase info to asyncdata if any exists, then pass to redux store in callback loadAsyncData
-                        // firebase.database().ref('users/' + user.uid + '/coins').once('value').then((snapshot) => {
-                        //     console.log('coins from firebase ', snapshot.val());
-                        // });
-
-                        // this.props.mergeFirebaseInfoToAsyncStorage(user.uid, this.loadAsyncData.bind(this));
                     }, (err) => {
                         console.log('Firebase Sign In Error', err);
                     }).then(() => {
                         // finally switch screens
-                        // Actions.categories();
+                        Actions.categories();
                     });
                 }
             );
@@ -197,9 +181,9 @@ class Welcome extends React.Component {
             console.log('cleared: ', Config.localChallengesLong);
         });
         // delete challenge short sound mp3s to save space
-        RNFetchBlob.fs.unlink(Config.localChallenges).then(() => {
-            console.log('cleared: ', Config.localChallenges);
-        });
+        // RNFetchBlob.fs.unlink(Config.localChallenges).then(() => {
+        //     console.log('cleared: ', Config.localChallenges);
+        // });
     }
     // loadObjData(data) {
     //     console.log('loadObjData..............', data);
@@ -327,11 +311,7 @@ class Welcome extends React.Component {
         // file:///Users/dereklloyd/Library/Developer/CoreSimulator/Devices/718F164D-6DC9-45A1-8243-2A71D3D25B84/data/Containers/Data/Application/F09DBFC1-D1C8-46B0-AEB9-222A6B46EA3A/Documents/RCTAsyncLocalStorage_V1/manifest.json
     }
     deleteLocalChallengesBlob() {
-        // delete challenge short sound mp3s to save space
-        // RNFetchBlob.fs.unlink(Config.localChallenges).then(() => {
-        //     console.log('cleared: ', Config.localChallenges);
-        // });
-                // delete challenge long sound mp3s to save space
+        // delete challenge long sound mp3s to save space
         RNFetchBlob.fs.unlink(Config.localChallengesLong).then(() => {
             console.log('cleared: ', Config.localChallengesLong);
         });
@@ -378,8 +358,15 @@ class Welcome extends React.Component {
     render() {
         // console.log('props ', this.props);
         return (
-            <View style={{ flex: 1, backgroundColor: Config.colorPrimary100 }}>
-                <View style={{ flex: 1, justifyContent: 'center', marginTop: 10 }}>
+            <View style={{ flex: 1, backgroundColor: Config.colorPrimary200 }}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+
+                    <Animatable.Image 
+                        source={require('../assets/images/backclouds.png')}    
+                        style={styles.backdropImageClouds}
+                        animation='fadeIn'
+                        // iterationCount="infinite"
+                    />
 
                     <Image 
                         source={require('../assets/images/backdrop.png')}    
@@ -392,15 +379,17 @@ class Welcome extends React.Component {
 
                     <Image source={require('../assets/images/title.png')} style={styles.title} resizeMode={Image.resizeMode.contain} />
                    
-                   
-                    <Button onPress={() => Actions.categories()}>{Strings.play.toUpperCase()}</Button>
+                    <ButtonPlay onPress={() => Actions.categories()}>
+                        {Strings.play.toUpperCase()}
+                    </ButtonPlay>
 
-                    <Button onPress={() => this.setState({ infoModal: !this.state.infoModal })}>
+                    <ButtonPlay onPress={() => this.setState({ infoModal: !this.state.infoModal })}>
                         {Strings.instructions.toUpperCase()}
-                    </Button>
+                    </ButtonPlay>
 
-                    <View style={{ alignItems: 'center', margin: 10 }}>
+                    <View style={styles.loginButtonContainer}>
                         <LoginButton
+                            // style={styles.loginButton}
                             readPermissions={['public_profile']}
                             // readPermissions={["email","public_profile","friends"]}
                             // publishPermissions={['publish_actions']}
@@ -413,10 +402,6 @@ class Welcome extends React.Component {
                         clear asyncStorage
                     </Text>
                     
-                    <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.deleteAsyncChallenges.bind(this)}>
-                        merge firebase
-                    </Text>
-
                     <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.deleteLocalChallengesBlob.bind(this)}>
                         blob delete challenges short and long
                     </Text>
@@ -447,6 +432,13 @@ const styles = StyleSheet.create({
         height: Config.deviceWidth / 2 * 3, //ratio of height/width is 3/2
         top: 0,
     },
+    backdropImageClouds: {
+        position: 'absolute',
+        width: Config.deviceWidth,
+        // height: Config.deviceWidth / 2 * 3, //ratio of height/width is 3/2
+        height: Config.deviceHeight,
+        bottom: 0,
+    },
     errorTextStyle: {
         marginTop: 20,
         fontSize: 20,
@@ -463,7 +455,23 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: Config.deviceWidth - 20,
         height: (Config.deviceWidth - 20) / 3,  // approx ratio is width = height * 3
-    }
+    },
+    loginButtonContainer: {
+        flex: 1,
+        alignItems: 'center', 
+        margin: 10, 
+        // borderWidth: 2,
+        // transform: [
+        //     { scale: 1.2 },
+        // ]
+    },
+    loginButton: {
+        // backgroundColor: 'blue',
+        // borderWidth: 4,
+        flex: 1,
+        width: Config.deviceWidth * 1 / 3,
+        // height: 50,
+    },
 });
 
 const mapStateToProps = state => {

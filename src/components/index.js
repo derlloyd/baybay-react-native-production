@@ -3,6 +3,8 @@ export * from './BannerSpace';
 export * from './Button';
 export * from './ButtonNext';
 export * from './ButtonOption';
+export * from './ButtonPlay';
+export * from './ButtonRetry';
 export * from './Card';
 export * from './CardSection';
 export * from './Coins';

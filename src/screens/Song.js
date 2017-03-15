@@ -1,19 +1,97 @@
 import React from 'react';
-import { View, Text, LayoutAnimation } from 'react-native';
+import firebase from 'firebase';
+import { View, LayoutAnimation, StyleSheet, Image, AsyncStorage } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { Player } from 'react-native-audio-toolkit';
 import { connect } from 'react-redux';
-import { Header, Button, ButtonOption, Babyface } from '../components';
+// import Icon from 'react-native-vector-icons/FontAwesome';
+import { Player } from 'react-native-audio-toolkit';
+
+import { Header, Spinner, ButtonOption, Babyface, Confirm, HelpButton, BannerSpace } from '../components';
+import { fetchChallengeShortSound, fetchChallengeLongSound, removeWrongOption, saveUserInfoToFirebase } from '../actions';
 import Config from '../Config';
-import { removeWrongOption } from '../actions';
+import Strings from '../Strings';
 
 class Song extends React.Component {
+    state = { babyClicks: 0, optionsModal: false, coinsModal: false, confirmOkModal: false, confirmOkModalMessage: '' }
 
     componentWillMount() {
-        // LayoutAnimation.spring();
+        // display message if first time played
+        AsyncStorage.getItem('challenges', (err, challenges) => {
+            if (!challenges) {
+                this.setState({ 
+                    confirmOkModal: !this.state.confirmOkModal, 
+                    confirmOkModalMessage: Strings.clickCorrectArtistRemoveByClicking, 
+                });
+            }
+        });
+
+        LayoutAnimation.spring();
+        // load short and long mp3s, pass the challenge object
+        // this.props.fetchChallengeShortSound(this.props.selected.challenge);
+        // this.props.fetchChallengeLongSound(this.props.selected.challenge);
+    }
+    componentWillReceiveProps(nextProps) {
+        // if user is signed in firebase, save updated user data to firebase
+
+        const user = firebase.auth().currentUser;
+        if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
+    }
+
+    onAcceptOptionsModal() {
+        this.props.removeWrongOption(this.props.selected.songOptions, 'song');
+        // this.props.purchaseWrongOption();
+        this.setState({ optionsModal: false });
+    }
+
+    onDeclineOptionsModal() {
+        // hide modal when user clicks NO
+        this.setState({ optionsModal: false });
+    }
+
+    onAcceptCoinsModal() {
+        // accept to buy more coins, go to accessories screen
+        this.setState({ coinsModal: false });
+        Actions.settings_tabs();
+    }
+
+    onDeclineCoinsModal() {
+        this.setState({ coinsModal: false });
+    }
+
+    onAcceptConfirmOKModal() {
+        this.setState({ confirmOkModal: false });
+    }
+
+    clickRemoveOption() {
+        // check if user has enough coins to remove, or does he need to buy more
+        if (this.props.coins >= Config.purchaseOptionCost) {
+            this.setState({ optionsModal: !this.state.optionsModal });
+        } else {
+            this.setState({ coinsModal: !this.state.coinsModal });
+        }
+    }
+    clickOption(option) {
+        // if (this.state.babyClicks === 0) {
+        //     return this.setState({ 
+        //             confirmOkModal: !this.state.confirmOkModal, 
+        //             confirmOkModalMessage: Strings.holdOnPleaseListenOnce, 
+        //         });
+        // }
+        // stop sound if currently playing
+        if (this.shortSound) {
+            this.shortSound.destroy();
+        }
+        if (option.correct) {
+            // option contains correct key, next guess
+            // this.playMidSuccessSound();
+            Actions.correct();
+        } else {
+            // no correct key, wrong option, wrong screen
+            Actions.wrong();
+        }
     }
     clickBaby() {
+        this.setState({ babyClicks: this.state.babyClicks + 1 });
         // stop sound if currently playing
         if (this.shortSound) {
             this.shortSound.destroy();
@@ -24,106 +102,189 @@ class Song extends React.Component {
         this.shortSound = new Player(filePath).play();
         this.shortSound.play();
     }
-    
-    clickOption(option) {
-        // stop sound if currently playing
-        if (this.shortSound) {
-            this.shortSound.destroy();
-        }
-        if (option.correct) {
-            // option contains correct key
-            Actions.correct();
-        } else {
-            // no correct key, wrong option
-            Actions.wrong();
-        }
-    }
 
-    playSuccessSound() {
-        // get random songname
-        const randomIndex = Math.floor(Math.random() * this.props.gamesounds[1].urls.length);
-        
-        const songName = this.props.gamesounds[1].urls[randomIndex].url;
-        
-        const songNameEncoded = songName.replace(/ /g, '%20');
-
-        new Player('file://' + Config.localGamesounds + songNameEncoded).play();
-    }
-
-    render() {
+    renderOptionList() {
         // get list of options from props
         const optionList = this.props.selected.songOptions.map((option, i) => {
             // function that renders each option
             if (option.hide) {
-                // inactive button
+                // disabled inactive button, no text
                 return (
-                    <Button key={i}>
-                        -
-                    </Button>
+                    <ButtonOption key={i} disabled> </ButtonOption>
                 );
             }
             // standard option button
             return (
-                <ButtonOption key={i} onPress={() => { this.clickOption(option); }}>
+                <ButtonOption key={i} correct={option.correct} onPress={() => { this.clickOption(option); }}>
                     {option.name}
                 </ButtonOption>
             );
         });
+        return optionList;
+    }
+    renderBabyface() {
+        // if (this.props.selected.shortSoundLoaded) {
+            return (
+                <Babyface onPress={this.clickBaby.bind(this)} accessories={this.props.accessories} />
+            );
+        // }
+        // return (
+                // <Spinner style={{ height: 200, width: 200 }} />
+            // );
+    }
 
+    render() {
+        // console.log(this.state);
+
+        const i = this.props.selected.challengeIndex;
+        const challengeNumber = ((i + 1) < 10) ? `0${(i + 1).toString()}` : (i + 1).toString();
+        
         return (
             <View style={styles.screenContainer}>
+                <Image 
+                    source={require('../assets/images/backdrop.png')}    
+                    style={styles.backdropImage}
+                />
                 
                 <Header 
                     onPressBack={() => { Actions.artist(); }} 
-                    title="GUESS SONG" 
-                    coins={this.props.coins}
+                    title="" 
+                    coins={this.props.coins} 
+                    challengeNumber={challengeNumber}
+                    levelName={`${Strings.level} ${this.props.selected.level.levelNum}`}
+                    categoryName={this.props.selected.category.categoryName}
                 />
-                
                 <View style={styles.container}>
-                    <View style={styles.babyContainer}>
-                        <Babyface onPress={this.clickBaby.bind(this)} accessories={{ }} />
-                    </View>
-                    <View style={styles.optionsContainer}>
-                        <Icon 
-                            name="question-circle-o" 
-                            onPress={() => { this.props.removeWrongOption(this.props.selected.songOptions, 'song'); }}
-                            size={60} 
-                            color="#900"
-                        />
+                    <View style={styles.topContainer}>
+
+                            {this.renderBabyface()}
                         
-                        {optionList}
+                        <View style={styles.helpContainer}>
+                            <HelpButton onPress={this.clickRemoveOption.bind(this)} />
+                        </View>
+
+                    </View>
+
+                    <View style={styles.optionsContainer}>
+                        
+                        {this.renderOptionList()}
 
                     </View>       
-                </View>       
+
+                </View>
+                <Confirm
+                    visible={this.state.optionsModal}
+                    onAccept={this.onAcceptOptionsModal.bind(this)}
+                    onDecline={this.onDeclineOptionsModal.bind(this)}
+                    buyWrongAnswer
+                />
+
+                <Confirm
+                    visible={this.state.coinsModal}
+                    onAccept={this.onAcceptCoinsModal.bind(this)}
+                    onDecline={this.onDeclineCoinsModal.bind(this)}
+                    nsf
+                />
+
+                <Confirm
+                    ok
+                    visible={this.state.confirmOkModal}
+                    onAccept={this.onAcceptConfirmOKModal.bind(this)}
+                >
+                    {this.state.confirmOkModalMessage}
+                </Confirm>
+
+                <BannerSpace />
             </View>       
         );
     }
 }
 
-const styles = {
+const styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
+        backgroundColor: Config.colorPrimary50,
+        // marginBottom: Config.bannerHeight,
+        // marginBottom: 60,
+    },
+    backdropImage: {
+        position: 'absolute',
+        width: Config.deviceWidth,
+        height: Config.deviceWidth / 2 * 3, //ratio of height/width is 3/2
+        top: -50,
     },
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignSelf: 'center',
+        // alignSelf: 'center',
+        // alignSelf: 'stretch',
+        // borderWidth: 5,
+        // borderColor: 'black',
     },
-    babyContainer: {
-        flex: 1,
+    topContainer: {
+        flex: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    helpContainer: {
+        // flex: 1,
+        position: 'absolute',
+        // left: 300,
+        // marginRight: 25,
+        right: 0,
+        bottom: 0,
     },
     optionsContainer: {
         flex: 1,
     }
-};
+});
 
 // makes state available as props
 const mapStateToProps = state => {
     return { 
-        selected: state.selected,
-        coins: state.coins,  
+        selected: state.selected, 
+        coins: state.coins,
+        accessories: state.accessories,
         gamesounds: state.gamesounds,
+        // confirmOkMessage: 'this is a confirmOK message',
     };
 };
 
-export default connect(mapStateToProps, { removeWrongOption })(Song);
+export default connect(mapStateToProps, { 
+    // fetchGamesounds, 
+    fetchChallengeShortSound, 
+    fetchChallengeLongSound, 
+    removeWrongOption, 
+    saveUserInfoToFirebase,
+})(Song);
+
+
+        // get list of options from props
+        // const optionList = this.props.selected.artistOptions.map((option, i) => {
+        //     // function that renders each option
+        //     if (option.hide) {
+        //         // inactive button
+        //         return (
+        //             <ButtonOptionDisabled key={i}>
+        //                 -
+        //             </ButtonOptionDisabled>
+        //         );
+        //     }
+        //     // standard option button
+        //     return (
+        //         <ButtonOption key={i} correct={option.correct} onPress={() => { this.clickOption(option); }}>
+        //             {option.name}
+        //         </ButtonOption>
+        //     );
+        // });
+            
+                    // <Button onPress={() => { this.props.removeWrongOption(this.props.selected.artistOptions, 'artist'); }}>
+                    //     REMOVE 1 WRONG
+                    // </Button>
+                            // onPress={() => { this.props.removeWrongOption(this.props.selected.artistOptions, 'artist'); }}
+                // <Button onPress={() => this.setState({ showModal: !this.state.showModal })}>
+                //         show modal
+                //     </Button>
+                            // onPress={() => this.setState({ optionsModal: !this.state.optionsModal })}
+                // console.log('this props: ', this.props);
+        // const list = this.renderOptionList.bind(this);

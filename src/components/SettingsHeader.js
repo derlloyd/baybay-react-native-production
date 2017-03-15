@@ -69,7 +69,7 @@ const styles = {
         flex: 1,
         // alignItems: 'center',
         fontSize: 20,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     }
 };
 

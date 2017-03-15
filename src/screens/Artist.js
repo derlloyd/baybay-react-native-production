@@ -163,7 +163,7 @@ class Artist extends React.Component {
                     title="" 
                     coins={this.props.coins} 
                     challengeNumber={challengeNumber}
-                    levelName={this.props.selected.level.levelName}
+                    levelName={`${Strings.level} ${this.props.selected.level.levelNum}`}
                     categoryName={this.props.selected.category.categoryName}
                 />
                 <View style={styles.container}>

@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     title: {
         color: 'white',
         fontSize: 13,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontFamily: Config.fontMain,
         letterSpacing: 0.5,
         textAlign: 'center',

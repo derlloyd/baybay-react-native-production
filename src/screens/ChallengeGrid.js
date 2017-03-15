@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Header, BannerSpace } from '../components';
 import { challengeUpdate, resetShortSound, saveUserInfoToFirebase } from '../actions';
 import Config from '../Config';
+import Strings from '../Strings';
 
 class ChallengeGrid extends React.Component {
     constructor(props) {
@@ -117,7 +118,7 @@ class ChallengeGrid extends React.Component {
                     onPressBack={() => { Actions.categories(); }} 
                     title="" 
                     coins={this.props.coins} 
-                    levelName={this.props.selected.level.levelName}
+                    levelName={`${Strings.level} ${this.props.selected.level.levelNum}`}
                     categoryName={this.props.selected.category.categoryName}
                 />
 
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
         fontSize: 25,
         color: 'white',
         fontFamily: Config.fontMain,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         // paddingLeft: 15
     },
     challengeTextStyleTried: {
@@ -200,7 +201,7 @@ const styles = StyleSheet.create({
         // color: 'grey',
         fontFamily: Config.fontMain,
         opacity: 0.54,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         // paddingLeft: 15
     }
 });

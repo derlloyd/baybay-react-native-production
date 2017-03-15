@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         fontFamily: Config.fontMain,
         // color: Config.colorPrimary300,
         fontSize: 18,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         // paddingLeft: 30,
         // paddingLeft: 3,
         paddingRight: 3,

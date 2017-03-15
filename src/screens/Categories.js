@@ -7,19 +7,16 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Header, Card, Spinner, Confirm } from '../components';
 import { fetchAllCategories, saveUserInfoToFirebase, categoryUpdate, levelUpdate, coinsSubtract, saveLevel, saveInitialLevels } from '../actions';
 import Config from '../Config';
+import Strings from '../Strings';
 
 class Categories extends React.Component {
     state = { buyModal: false, coinsModal: false, level: '' }
 
     componentWillMount() {
         this.props.fetchAllCategories();
-        
-        const user = firebase.auth().currentUser;
-        if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props); } 
     }
     componentWillReceiveProps(nextProps) {
         // if user is signed in firebase, save updated user data to firebase
-        console.log('rec3eiving props....');
         const user = firebase.auth().currentUser;
         if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
     }
@@ -101,7 +98,7 @@ class Categories extends React.Component {
                     <View style={styles.lockedLevelStyle}>
                         <View style={styles.levelNameSection}>
                             <Text style={styles.levelNameStyle}>
-                                {level.levelName}
+                                {Strings.level} {level.levelNum}
                             </Text>
                         </View>
 
@@ -127,7 +124,7 @@ class Categories extends React.Component {
                     <View style={styles.levelStyle}>
                         <View style={styles.levelNameSection}>
                             <Text style={styles.levelNameStyle}>
-                                {level.levelName}
+                                {Strings.level} {level.levelNum}
                             </Text>
                         </View>
                         <View style={styles.levelIconSection}>
@@ -208,7 +205,7 @@ class Categories extends React.Component {
                     visible={this.state.buyModal}
                     onAccept={this.onAcceptBuyModal.bind(this)}
                     onDecline={this.onDeclineBuyModal.bind(this)}
-                    buyLevel={{ levelName: this.state.level.levelName, levelPrice: this.state.level.levelPrice }}
+                    buyLevel={{ levelName: `${Strings.level} ${this.state.level.levelNum}`, levelPrice: this.state.level.levelPrice }}
                 />
 
                 <Confirm
@@ -254,8 +251,9 @@ const styles = StyleSheet.create({
     },
     categoryTitleStyle: {
         color: Config.colorPrimary900,
-        fontFamily: Config.fontMain,
-        fontWeight: 'bold',
+        // fontFamily: Config.fontMain,
+        fontFamily: 'RifficFree-Bold',
+        // fontWeight: 'bold',
         fontSize: 18,
         paddingLeft: 10,
         opacity: 0.95,
@@ -304,7 +302,7 @@ const styles = StyleSheet.create({
     },
     levelPriceStyle: {
         color: 'white', 
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: 16,
         fontFamily: Config.fontMain,
         // paddingLeft: 10,
@@ -314,7 +312,7 @@ const styles = StyleSheet.create({
     },
     levelNameStyle: {
         color: 'white', 
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: 16,
         fontFamily: Config.fontMain,
         paddingLeft: 10,

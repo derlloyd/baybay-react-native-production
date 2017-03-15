@@ -20,38 +20,6 @@ class Babyface extends React.Component {
         // if yes, render each one
     // }
 
-    renderAccessories() {
-        // this will create a string of JSX with all Images
-        // main happy babyface is first layer
-        const rendered = [(
-            <Image
-                key={'x1'} 
-                source={happy}
-                style={[styles.imageStyle, this.props.imageStyle]} 
-            />
-        )];
-        // then crying babyface layer
-        rendered.push(
-            <Image 
-                key={'x2'}
-                source={cry}
-                style={this.props.isCrying ? styles.overlay : styles.hidden} 
-            />
-        );
-        // then all of the accessory layers on top (array of objects in Config file)
-            Config.accessories.forEach((accessory, i) => {
-                const namePropIsTrue = this.props.accessories[accessory.name];
-                rendered.push(
-                    <Image
-                        key={i} 
-                        source={accessory.image}
-                        style={namePropIsTrue ? [styles.overlay, this.props.overlay] : styles.hidden}
-                    />
-                );
-            });
-
-        return rendered;
-    }
     onPressAction() {
         // perform passed onPress if there is one
         if (this.props.onPress) {
@@ -71,6 +39,42 @@ class Babyface extends React.Component {
 
         // trigger animation
         this.refs.view[action](800);
+    }
+    renderAccessories() {
+        // this will create a string of JSX with all Images
+        // main happy babyface is first layer
+        const rendered = [(
+            <Image
+                key={'x1'} 
+                source={happy}
+                style={[styles.imageStyle, this.props.imageStyle]} 
+            />
+        )];
+        // then crying babyface layer
+        rendered.push(
+            <Image 
+                key={'x2'}
+                source={cry}
+                style={this.props.isCrying ? styles.overlay : styles.hidden} 
+            />
+        );
+
+        if (this.props.accessories) {
+            // then if the baby is not crying
+            // all of the accessory layers on top (array of objects in Config file)
+            Config.accessories.forEach((accessory, i) => {
+                const namePropIsTrue = this.props.accessories[accessory.name];
+                rendered.push(
+                    <Image
+                        key={i} 
+                        source={accessory.image}
+                        style={namePropIsTrue ? [styles.overlay, this.props.overlay] : styles.hidden}
+                    />
+                );
+            });
+        }
+
+        return rendered;
     }
     render() {
         // <Animatable.Text animation="wobble" iterationCount={1} direction="alternate">

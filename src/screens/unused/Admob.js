@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+/*import React, { Component } from 'react';
 import {
 //   AppRegistry,
   StyleSheet,
@@ -107,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AdmobExample;
+export default AdmobExample;*/

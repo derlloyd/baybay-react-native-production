@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
         fontFamily: Config.fontMain,
         // color: Config.colorPrimary,
         color: 'white',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     buttonCancel: {
         justifyContent: 'center',
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         color: Config.colorPrimary,
         // color: 'white',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     buttonOk: {
         justifyContent: 'center',
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         // color: Config.colorPrimary,
         color: 'white',
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
 });
 

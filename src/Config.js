@@ -21,6 +21,9 @@ const Config = {
     initialShortsounds: [
         { challengeId: 'a100', shortUrl: "James Brown - I Got the Feelin' BABY.mp3" },
         { challengeId: 'a101', shortUrl: 'Drake - one dance BABY.mp3' },
+        { challengeId: 'a102', shortUrl: 'Calvin Harris & Rihanna - This Is What You Came For BABY.mp3' },
+        { challengeId: 'a103', shortUrl: 'Adele - Rolling In The Deep baby.mp3' },
+        { challengeId: 'a104', shortUrl: 'George Michael - Faith BABY.mp3' },
     ],
     // https://material.io/guidelines/style/color.html#color-color-palette
     colorPrimary: '#2196F3',    // Blue 500
@@ -38,6 +41,7 @@ const Config = {
     colorAccent500: '#FFC107',
     colorAccent700: '#FFA000',
     colorAccent900: '#FF6F00',
+    colorWrongBg: 'grey',
     coinIconName: 'star-o',    // from fontawesome     star-o   star-half-o    diamond
     coinIconNameSolid: 'star',
     fontMain: 'RifficFree-Bold',        // alt KomikaAxis

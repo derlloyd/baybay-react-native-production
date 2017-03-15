@@ -1,6 +1,6 @@
 import React from 'react';
 import firebase from 'firebase';
-import { View, Text, TouchableOpacity, Platform, Image, AsyncStorage, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, Image, LayoutAnimation, AsyncStorage, Linking } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { Player } from 'react-native-audio-toolkit';
@@ -65,6 +65,7 @@ class Correct extends React.Component {
     };
 
     componentWillMount() {
+        LayoutAnimation.spring();
         // play happy baby win sound
         // start longsound
         this.playChallengeLongSound(); 
@@ -128,16 +129,6 @@ class Correct extends React.Component {
         if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
     }
 
-    playSuccessSound() {
-        // get random songname
-        const array = this.props.gamesounds[2].urls;
-        const randomIndex = Math.floor(Math.random() * array.length);
-        const songName = array[randomIndex].url;
-        const songNameEncoded = songName.replace(/ /g, '%20');
-        
-        new Player('file://' + Config.localGamesounds + songNameEncoded).play();
-    }
-
     onPressStoreBadge() {
         // stop music
         this.longSound.destroy();
@@ -178,6 +169,16 @@ class Correct extends React.Component {
         this.stopChallengeLongSound();
         Actions.challenges();
     }
+    playSuccessSound() {
+        // get random songname
+        const array = this.props.gamesounds[2].urls;
+        const randomIndex = Math.floor(Math.random() * array.length);
+        const songName = array[randomIndex].url;
+        const songNameEncoded = songName.replace(/ /g, '%20');
+        
+        new Player('file://' + Config.localGamesounds + songNameEncoded).play();
+    }
+
 
     playChallengeLongSound() {
         // make baby move
@@ -291,7 +292,12 @@ class Correct extends React.Component {
                 // />
         return (
             <View style={styles.screenContainer}>
-                
+                <Animatable.Image 
+                    source={require('../assets/images/backclouds.png')}    
+                    style={styles.backdropImageClouds}
+                    animation='fadeIn'
+                    // iterationCount="infinite"
+                />
                 <Animatable.Image 
                     source={require('../assets/images/backconfetti.png')}    
                     style={styles.backdropImage}
@@ -323,7 +329,7 @@ class Correct extends React.Component {
                     title="" 
                     coins={this.props.coins} 
                     challengeNumber={this.state.challengeNum}
-                    levelName={this.props.selected.level.levelName}
+                    levelName={`${Strings.level} ${this.props.selected.level.levelNum}`}
                     categoryName={this.props.selected.category.categoryName}
                 />
 
@@ -345,13 +351,13 @@ class Correct extends React.Component {
                         >
                             <Icon 
                                 name="circle"
-                                size={50} 
+                                size={60} 
                                 color='white'
                                 style={{ position: 'absolute' }}
                             />
                             <Icon 
                                 name="play-circle"
-                                size={50} 
+                                size={60} 
                                 color='black'
                                 style={{ backgroundColor: 'transparent' }}
                             />
@@ -364,13 +370,13 @@ class Correct extends React.Component {
                         >
                             <Icon 
                                 name="circle"
-                                size={50} 
+                                size={60} 
                                 color='white'
                                 style={{ position: 'absolute' }}
                             />
                             <Icon 
                                 name="stop-circle"
-                                size={50} 
+                                size={60} 
                                 color='black'
                                 style={{ backgroundColor: 'transparent' }}
                             />
@@ -399,7 +405,14 @@ class Correct extends React.Component {
 const styles = {
     screenContainer: {
         flex: 1,
-        backgroundColor: Config.colorAccent50,
+        backgroundColor: Config.colorAccent200,
+    },
+    backdropImageClouds: {
+        position: 'absolute',
+        width: Config.deviceWidth,
+        // height: Config.deviceWidth / 2 * 3, //ratio of height/width is 3/2
+        height: Config.deviceHeight,
+        bottom: 0,
     },
     backdropImage: {
         position: 'absolute',
@@ -451,7 +464,7 @@ const styles = {
     rewardMessageText: {
         // padding: 3,
         fontSize: 20,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         color: Config.colorPrimary300,
         fontFamily: Config.fontMain,
         // textShadowColor: Config.colorAccent700,
@@ -465,10 +478,10 @@ const styles = {
         padding: 3,
         backgroundColor: 'transparent',
         fontSize: 35,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontFamily: Config.fontMain,
         color: Config.colorAccent700,
-        textShadowColor: Config.colorPrimary300,
+        textShadowColor: Config.colorPrimary900,
         textShadowRadius: 1,
         textShadowOffset: {
             height: 1,
@@ -502,7 +515,7 @@ const styles = {
     headerNumberFormat: {
         // fontSize: 25,
         color: Config.colorAccent500,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         // paddingLeft: 15
     },
     itunesBadge: {

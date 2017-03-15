@@ -1,7 +1,7 @@
 // define all scenes that can be visited by app
 
 import React from 'react';
-import { Scene, Router, Actions } from 'react-native-router-flux';
+import { Scene, Router } from 'react-native-router-flux';
 import { Text } from 'react-native';
 // import { View, Text, Platform, StyleSheet, Navigator } from 'react-native';
 // import Icon from 'react-native-vector-icons/FontAwesome';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableHighlight } from 'react-native';
+import { Text, View, TouchableHighlight, TouchableOpacity } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
 import Config from '../Config';
@@ -26,7 +26,7 @@ class ButtonOption extends React.Component {
                 easing="ease" 
                 // iterationCount="infinite"
             >
-            <TouchableHighlight 
+            <TouchableOpacity 
                 underlayColor={correct ? Config.colorAccent100 : Config.colorAccent100} 
                 onPress={onPress} 
                 style={disabled ? styles.buttonStyleDisabled : [styles.buttonStyle, style]}
@@ -34,7 +34,7 @@ class ButtonOption extends React.Component {
                 <Text style={styles.textStyle}>
                     {renderChildren.toUpperCase()}
                 </Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
             </Animatable.View>
         );
     }

@@ -5,6 +5,7 @@ import * as Animatable from 'react-native-animatable';
 
 import { Coins } from './';
 import Config from '../Config';
+// import Strings from '../Strings';
 
 class Header extends React.Component {
     componentWillUpdate() {
@@ -19,7 +20,8 @@ class Header extends React.Component {
             coins, 
             categoryName, 
             levelName, 
-            challengeNumber 
+            challengeNumber,
+            noCoins, 
         } = this.props;
         
         const backChevron = (
@@ -89,7 +91,7 @@ class Header extends React.Component {
                     {categoryName ? middleText : (<Text style={styles.textStyle}>{title}</Text>)}
                 </Animatable.View>
 
-                <Coins coins={coins} />
+                {noCoins ? null : <Coins coins={coins} />}
 
             </View>
         );
@@ -127,7 +129,7 @@ const styles = StyleSheet.create({
         // alignItems: 'center',
         fontFamily: Config.fontMain,
         fontSize: 20,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     middleTextContainer: {
         width: Config.deviceWidth * 0.5, 

@@ -43,6 +43,11 @@ ${Strings.instructionsLine10}`,
         illustration: 'http://i.imgur.com/2nCt3Sbl.jpg'
     },
     {
+        title: Strings.instructionsLine11,
+        subtitle: '',
+        illustration: 'http://i.imgur.com/KZsmUi2l.jpg'
+    },
+    {
         title: `${Strings.fullyLicensed}
 
 ${Strings.haveFun}
@@ -86,7 +91,7 @@ class InfoModal extends React.Component {
                         />
                         <Icon 
                             name="times"
-                            size={30} 
+                            size={35} 
                             style={{ paddingLeft: 10 }}
                             color="white"
                         />
@@ -124,6 +129,7 @@ const styles = StyleSheet.create({
     },
     titleImage: {
         alignSelf: 'center',
+        // justifyContent: 'center',
         width: Config.deviceWidth / 2,
         height: (Config.deviceWidth / 2) / 3,  // approx ratio is width = height * 3
         marginBottom: 20,

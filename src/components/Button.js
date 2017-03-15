@@ -25,7 +25,7 @@ const styles = {
         alignSelf: 'center',
         color: 'white',   // '#007aff'
         fontSize: 16,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         // fontFamily: 'KomikaAxis',
         fontFamily: Config.fontMain,
         // fontFamily: 'Noteworthy-Bold',
