@@ -13,39 +13,44 @@ const slides = [
 
 ${Strings.instructionsLine3}`,
         subtitle: '',
-        illustration: 'http://i.imgur.com/MABUbpDl.jpg'
+        illustration: require('../assets/images/face.png')
     },
     {
         title: Strings.instructionsLine4,
         subtitle: '',
-        illustration: 'http://i.imgur.com/MABUbpDl.jpg'
+        illustration: require('../assets/images/itunes.png')
     },
     {
         title: Strings.instructionsLine5,
         subtitle: '',
-        illustration: 'http://i.imgur.com/MABUbpDl.jpg'
+        illustration: require('../assets/images/google.png')
     },
     {
         title: Strings.instructionsLine6,
         subtitle: '',
-        illustration: 'http://i.imgur.com/MABUbpDl.jpg'
+        illustration: require('../assets/images/title.png')
     },
     {
         title: Strings.instructionsLine7,
         subtitle: '',
-        illustration: 'http://i.imgur.com/KZsmUi2l.jpg'
+        illustration: require('../assets/images/face.png')
+    },
+    {
+        title: Strings.instructionsLine8,
+        subtitle: '',
+        illustration: require('../assets/images/face.png')
     },
     {
         title: `${Strings.instructionsLine9}
 
 ${Strings.instructionsLine10}`,
         subtitle: '',
-        illustration: 'http://i.imgur.com/2nCt3Sbl.jpg'
+        illustration: Platform.OS === 'ios' ? require('../assets/images/itunes.png') : require('../assets/images/google.png')
     },
     {
         title: Strings.instructionsLine11,
         subtitle: '',
-        illustration: 'http://i.imgur.com/KZsmUi2l.jpg'
+        illustration: require('../assets/images/face.png')
     },
     {
         title: `${Strings.fullyLicensed}
@@ -54,7 +59,7 @@ ${Strings.haveFun}
 
 ${Strings.InfoEmail}`,
         subtitle: '',
-        illustration: 'http://i.imgur.com/lceHsT6l.jpg'
+        illustration: require('../assets/images/face.png')
     }
 ];
 

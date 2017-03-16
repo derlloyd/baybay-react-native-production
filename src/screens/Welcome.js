@@ -40,14 +40,17 @@ const { LoginButton, AccessToken } = FBSDK;
 const animationSchema = {
   0: {
     // rotateZ: '0deg',
+    scale: 1,
     opacity: 0.75,
   },
   0.5: {
     // rotateZ: '0deg',
+    scale: 1.05,
     opacity: 1,
   },
   1: {
     // rotateZ: '22.5deg',
+    scale: 1,
     opacity: 0.75,
   },
 };
@@ -498,7 +501,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: Config.colorPrimary, 
         borderRadius: Config.babyfaceDimension / 4,
-        backgroundColor: Config.colorPrimary100,
+        backgroundColor: 'white',
+        // backgroundColor: Config.colorPrimary100,
         padding: 10,
         position: 'absolute', 
         right: 5, 

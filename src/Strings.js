@@ -61,7 +61,7 @@ const Strings = new LocalizedStrings({
         "instructionsLine8": "BayBay starts the game with 1,000 coins.  Use your coin collection to get new levels and even upgrade BayBay’s look.",
         "gameModes": "Game Modes",
         "instructionsLine9": "At the level grid screen, the check mark option on the slider  puts you in normal mode, play the game as usual. ",
-        "instructionsLine10": "The note option on the slider  puts you in soundboard mode.  Once you've solved a game, play with the BayBay sounds like a DJ! ",
+        "instructionsLine10": "The note option on the slider puts you in soundboard mode.  Once you've solved a game, play with the BayBay sounds like a DJ! ",
         "instructionsLine11": "Login Facebook to save across your devices.",
         "haveFun": "Have fun with BayBay!!",
         "fullyLicensed": "All music fully licensed",

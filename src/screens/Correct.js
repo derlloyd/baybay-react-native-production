@@ -353,7 +353,7 @@ class Correct extends React.Component {
                                 name="circle"
                                 size={60} 
                                 color='white'
-                                style={{ position: 'absolute' }}
+                                style={{ position: 'absolute', backgroundColor: 'transparent' }}
                             />
                             <Icon 
                                 name="play-circle"
@@ -372,7 +372,7 @@ class Correct extends React.Component {
                                 name="circle"
                                 size={60} 
                                 color='white'
-                                style={{ position: 'absolute' }}
+                                style={{ position: 'absolute', backgroundColor: 'transparent' }}
                             />
                             <Icon 
                                 name="stop-circle"

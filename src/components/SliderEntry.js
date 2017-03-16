@@ -25,10 +25,9 @@ class SliderEntry extends Component {
             >
                 <View style={styles.imageContainer}>
                     <Image
-                      source={{ uri: illustration }}
+                      source={illustration}
                       style={styles.image}
                     />
-                    <View style={styles.radiusMask} />
                 </View>
                 <View style={styles.textContainer}>
                     { uppercaseTitle }
@@ -37,6 +36,7 @@ class SliderEntry extends Component {
         );
     }
 }
+                    // <View style={styles.radiusMask} />
                     // <Text style={styles.subtitle} numberOfLines={6}>{ subtitle }</Text>
 
 
@@ -59,27 +59,33 @@ const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
         backgroundColor: Config.colorPrimary200,
-        borderBottomWidth: 1,
-        borderColor: Config.colorAccent900,
+        borderBottomWidth: 4,
+        borderColor: Config.colorAccent500,
         borderTopLeftRadius: entryBorderRadius,
         borderTopRightRadius: entryBorderRadius
     },
     image: {
-        ...StyleSheet.absoluteFillObject,
-        resizeMode: 'cover',
-        borderRadius: Platform.OS === 'ios' ? entryBorderRadius : 0,
+        // ...StyleSheet.absoluteFillObject,
+        flex: 1,
+        resizeMode: 'contain',
+        // borderWidth: 2,
+        // position: 'absolute',
+        // top: 0,
+        width: slideWidth,
+        // height: slideHeight,
+        // borderRadius: Platform.OS === 'ios' ? entryBorderRadius : 0,
         borderTopLeftRadius: entryBorderRadius,
         borderTopRightRadius: entryBorderRadius
     },
     // image's border radius is buggy on ios; let's hack it!
-    radiusMask: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: entryBorderRadius,
-        backgroundColor: Config.colorAccent500,
-    },
+    // radiusMask: {
+    //     position: 'absolute',
+    //     bottom: 0,
+    //     left: 0,
+    //     right: 0,
+    //     height: entryBorderRadius,
+    //     // backgroundColor: Config.colorAccent500,
+    // },
     textContainer: {
         justifyContent: 'center',
         paddingTop: 20 - entryBorderRadius,
@@ -91,19 +97,19 @@ const styles = StyleSheet.create({
     },
     title: {
         color: 'white',
-        fontSize: 13,
+        // fontSize: 13,
         // fontWeight: 'bold',
         fontFamily: Config.fontMain,
         letterSpacing: 0.5,
         textAlign: 'center',
     },
-    subtitle: {
-        marginTop: 6,
-        // color: colors.gray,
-        fontFamily: Config.fontMain,
-        fontSize: 12,
-        fontStyle: 'italic'
-    },
+    // subtitle: {
+    //     marginTop: 6,
+    //     // color: colors.gray,
+    //     fontFamily: Config.fontMain,
+    //     fontSize: 12,
+    //     // fontStyle: 'italic'
+    // },
 });
 
 export { SliderEntry, itemWidth };
