@@ -13,44 +13,44 @@ const slides = [
 
 ${Strings.instructionsLine3}`,
         subtitle: '',
-        illustration: require('../assets/images/face.png')
+        illustration: require('../assets/images/info/1.png')
     },
     {
         title: Strings.instructionsLine4,
         subtitle: '',
-        illustration: require('../assets/images/itunes.png')
+        illustration: require('../assets/images/info/4.png')
     },
     {
         title: Strings.instructionsLine5,
         subtitle: '',
-        illustration: require('../assets/images/google.png')
+        illustration: require('../assets/images/info/5.png')
     },
     {
         title: Strings.instructionsLine6,
         subtitle: '',
-        illustration: require('../assets/images/title.png')
+        illustration: require('../assets/images/info/6.png')
     },
     {
         title: Strings.instructionsLine7,
         subtitle: '',
-        illustration: require('../assets/images/face.png')
+        illustration: require('../assets/images/info/7.png')
     },
     {
         title: Strings.instructionsLine8,
         subtitle: '',
-        illustration: require('../assets/images/face.png')
+        illustration: require('../assets/images/info/8.png')
     },
     {
         title: `${Strings.instructionsLine9}
 
 ${Strings.instructionsLine10}`,
         subtitle: '',
-        illustration: Platform.OS === 'ios' ? require('../assets/images/itunes.png') : require('../assets/images/google.png')
+        illustration: Platform.OS === 'ios' ? require('../assets/images/info/10ios.png') : require('../assets/images/info/10.png')
     },
     {
         title: Strings.instructionsLine11,
         subtitle: '',
-        illustration: require('../assets/images/face.png')
+        illustration: Platform.OS === 'ios' ? require('../assets/images/info/11ios.png') : require('../assets/images/info/11.png')
     },
     {
         title: `${Strings.fullyLicensed}
@@ -59,7 +59,7 @@ ${Strings.haveFun}
 
 ${Strings.InfoEmail}`,
         subtitle: '',
-        illustration: require('../assets/images/face.png')
+        illustration: require('../assets/images/info/end.png')
     }
 ];
 
