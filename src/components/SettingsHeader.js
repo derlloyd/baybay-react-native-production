@@ -5,18 +5,6 @@ import { Coins } from './';
 import Config from '../Config';
 
 const SettingsHeader = ({ onPressBack, title, coins }) => {
-    // const backChevron = (
-    //     <View style={styles.backButton}>
-    //         <TouchableOpacity onPress={onPressBack}>
-    //             <Icon 
-    //                 name="chevron-left"
-    //                 size={30} 
-    //                 color="white"
-    //             />
-    //         </TouchableOpacity>
-    //     </View>
-    // );
-
     return (
         <View style={styles.containerStyle}>
 
@@ -42,7 +30,6 @@ const styles = {
     containerStyle: {
         flexDirection: 'row',
         justifyContent: 'space-between', 
-        // flex: 1,
         alignItems: 'center',
         backgroundColor: Config.colorPrimary100,
         shadowColor: '#000000',
@@ -62,14 +49,11 @@ const styles = {
         alignItems: 'flex-end',
         justifyContent: 'center',
         backgroundColor: 'transparent',
-        // borderWidth: 1,
     },
     textStyle: {
         color: 'white',
         flex: 1,
-        // alignItems: 'center',
         fontSize: 20,
-        // fontWeight: 'bold',
     }
 };
 

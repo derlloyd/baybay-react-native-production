@@ -150,7 +150,7 @@ ${Strings.doYouWantToBuyThisFor}`}</Text>
         >
             <View style={[styles.screenContainer, style]}>
                 
-            {content} 
+                {content} 
 
             </View>
         </Modal>
@@ -161,16 +161,10 @@ const radius = 10;
 
 const styles = StyleSheet.create({
     screenContainer: {
-        // backgroundColor: 'rgba(0, 0, 100, 0.85)',
-        // backgroundColor: 'rgba(200, 220, 255, 0.90)',
         backgroundColor: 'rgba(0, 0, 0, 0.85)',
-        // backgroundOpacity: 0.5,
         position: 'relative',
         flex: 1,
         justifyContent: 'center',
-        // marginLeft: 5,  // space between l and r
-        // marginRight: 5,
-        // marginTop: 10,   // space between cards
     },
     card: {
         backgroundColor: 'white',
@@ -179,7 +173,6 @@ const styles = StyleSheet.create({
         marginRight: Config.deviceWidth / 20,
         marginBottom: Config.deviceWidth / 20,
         borderRadius: radius,
-        // height: Config.deviceHeight / 2,
         shadowColor: '#000000',
         shadowOpacity: 0.7,
         shadowRadius: 4,
@@ -189,13 +182,9 @@ const styles = StyleSheet.create({
         },
     },
     textSectionStyle: {
-        // height: 125,
-        // flex: 0,
         justifyContent: 'flex-start',
         margin: Config.deviceWidth / 40,
         opacity: 0.87,
-        // flexDirection: 'row',
-        // borderColor: '#ddd',
         height: Config.deviceHeight / 3,
         position: 'relative',
     },
@@ -203,7 +192,6 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 18,
         fontFamily: Config.fontMain,
-        // textAlign: 'center',
         lineHeight: 40,
         color: Config.colorPrimary,
     },
@@ -216,76 +204,46 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: Config.deviceWidth / 2.5,
-        // width: 120,
-        // minHeight: 50,
         height: Config.deviceHeight / 12,
         marginLeft: 10,
         backgroundColor: Config.colorPrimary,
         borderRadius: radius,
-        // borderWidth: 1,
-        // borderColor: 'red', 
-        // padding: 10,
-        // margin: 10,
     },
     buttonTextYes: {
-        // paddingLeft: 30,
-        // paddingRight: 30,
         fontSize: 15,
         alignSelf: 'center',
         fontFamily: Config.fontMain,
-        // color: Config.colorPrimary,
         color: 'white',
-        // fontWeight: 'bold',
     },
     buttonCancel: {
         justifyContent: 'center',
         flexDirection: 'row',
         alignItems: 'center',
         width: Config.deviceWidth / 3,
-        // width: 100,
-        // minHeight: 50,
         height: Config.deviceHeight / 12,
-        // marginLeft: 10,
         backgroundColor: 'white',
         borderRadius: radius,
         borderWidth: 2,
         borderColor: Config.colorPrimary, 
-        // padding: 10,
-        // marginBottom: 10,
     },
     buttonTextCancel: {
         fontFamily: Config.fontMain,
-        // paddingLeft: 30,
-        // paddingRight: 30,
         fontSize: 15,
         alignSelf: 'center',
         color: Config.colorPrimary,
-        // color: 'white',
-        // fontWeight: 'bold',
     },
     buttonOk: {
         justifyContent: 'center',
         width: Config.deviceWidth / 2.5,
-        // width: 120,
-        // minHeight: 50,
         height: Config.deviceHeight / 12,
-        // marginLeft: 10,
         backgroundColor: Config.colorPrimary,
         borderRadius: radius,
-        // borderWidth: 1,
-        // borderColor: 'red', 
-        // padding: 10,
-        // margin: 10,
     },
     buttonTextOk: {
-        // paddingLeft: 30,
-        // paddingRight: 30,
         fontFamily: Config.fontMain,
         fontSize: 15,
         alignSelf: 'center',
-        // color: Config.colorPrimary,
         color: 'white',
-        // fontWeight: 'bold',
     },
 });
 

@@ -126,7 +126,6 @@ class InfoModal extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: 'rgba(0, 0, 0, 0.9)',
         backgroundColor: 'rgba(10, 20, 50, 0.9)',
         alignItems: 'center',
         justifyContent: 'center',
@@ -134,20 +133,15 @@ const styles = StyleSheet.create({
     },
     titleImage: {
         alignSelf: 'center',
-        // justifyContent: 'center',
         width: Config.deviceWidth / 2,
         height: (Config.deviceWidth / 2) / 3,  // approx ratio is width = height * 3
         marginBottom: 20,
     },
     slider: {
-        // marginBottom: 30
     },
     sliderContainer: {
-        // borderColor: 'red',
-        // borderWidth: 2,
     },
     backButton: {
-        // flex: 1,
         width: 60,
         height: (Config.deviceWidth / 2) / 3,
         marginLeft: 5,
@@ -158,33 +152,9 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         paddingTop: Platform.OS === 'ios' ? Config.statusBarPadding * 2 : 20,
         position: 'absolute',
-        // left: 300,
-        // marginRight: 25,
         right: 0,
         top: 0,
-        // bottom: 0,
     },
-    // title: {
-    //     marginTop: 30,
-    //     backgroundColor: 'transparent',
-    //     color: 'white',
-    //     // color: 'rgba(255, 255, 255, 0.9)',
-    //     // opacity: 0.9,
-    //     fontSize: 22,
-    //     fontWeight: 'bold',
-    //     textAlign: 'center'
-    // },
-    // subtitle: {
-    //     marginTop: 5,
-    //     marginBottom: 15,
-    //     backgroundColor: 'transparent',
-    //     color: 'white',
-    //     // color: 'rgba(255, 255, 255, 0.75)',
-    //     opacity: 0.9,
-    //     fontSize: 16,
-    //     fontStyle: 'italic',
-    //     textAlign: 'center'
-    // },
 });
 
 export { InfoModal };

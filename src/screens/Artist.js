@@ -3,16 +3,35 @@ import firebase from 'firebase';
 import { View, LayoutAnimation, StyleSheet, Image, AsyncStorage } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-// import Icon from 'react-native-vector-icons/FontAwesome';
 import { Player } from 'react-native-audio-toolkit';
+import FBSDK from 'react-native-fbsdk';
+import * as Animatable from 'react-native-animatable';
 
-import { Header, Spinner, ButtonOption, Babyface, Confirm, HelpButton, BannerSpace } from '../components';
+import { Header, Spinner, ButtonOption, Babyface, Confirm, HelpButton } from '../components';
 import { fetchChallengeShortSound, fetchChallengeLongSound, removeWrongOption, saveUserInfoToFirebase } from '../actions';
 import Config from '../Config';
 import Strings from '../Strings';
 
+const { ShareButton } = FBSDK;
+
 class Artist extends React.Component {
-    state = { babyClicks: 0, optionsModal: false, coinsModal: false, confirmOkModal: false, confirmOkModalMessage: '' }
+    constructor(props) {
+        super(props);
+        const shareLinkContent = {
+            contentType: 'link',
+            // contentUrl: 'https://www.facebook.com/baybayapp/',
+            contentUrl: 'https://baybay.co',
+            // contentDescription: 'Help me find BayBay!'
+        };
+        this.state = {
+            shareLinkContent,
+            babyClicks: 0, 
+            optionsModal: false, 
+            coinsModal: false, 
+            confirmOkModal: false, 
+            confirmOkModalMessage: '',
+        };
+    }
 
     componentWillMount() {
         // display message if first time played
@@ -35,6 +54,31 @@ class Artist extends React.Component {
 
         const user = firebase.auth().currentUser;
         if (user) { this.props.saveUserInfoToFirebase(user.uid, this.props, nextProps); } 
+    }
+
+    onAcceptOptionsModal() {
+        this.props.removeWrongOption(this.props.selected.artistOptions, 'artist');
+        // this.props.purchaseWrongOption();
+        this.setState({ optionsModal: false });
+    }
+
+    onDeclineOptionsModal() {
+        // hide modal when user clicks NO
+        this.setState({ optionsModal: false });
+    }
+
+    onAcceptCoinsModal() {
+        // accept to buy more coins, go to accessories screen
+        this.setState({ coinsModal: false });
+        Actions.settings_tabs();
+    }
+
+    onDeclineCoinsModal() {
+        this.setState({ coinsModal: false });
+    }
+
+    onAcceptConfirmOKModal() {
+        this.setState({ confirmOkModal: false });
     }
 
     clickOption(option) {
@@ -75,31 +119,6 @@ class Artist extends React.Component {
         } else {
             this.setState({ coinsModal: !this.state.coinsModal });
         }
-    }
-
-    onAcceptOptionsModal() {
-        this.props.removeWrongOption(this.props.selected.artistOptions, 'artist');
-        // this.props.purchaseWrongOption();
-        this.setState({ optionsModal: false });
-    }
-
-    onDeclineOptionsModal() {
-        // hide modal when user clicks NO
-        this.setState({ optionsModal: false });
-    }
-
-    onAcceptCoinsModal() {
-        // accept to buy more coins, go to accessories screen
-        this.setState({ coinsModal: false });
-        Actions.settings_tabs();
-    }
-
-    onDeclineCoinsModal() {
-        this.setState({ coinsModal: false });
-    }
-
-    onAcceptConfirmOKModal() {
-        this.setState({ confirmOkModal: false });
     }
 
     clickBaby() {
@@ -146,13 +165,16 @@ class Artist extends React.Component {
     }
 
     render() {
-        // console.log(this.state);
-
         const i = this.props.selected.challengeIndex;
         const challengeNumber = ((i + 1) < 10) ? `0${(i + 1).toString()}` : (i + 1).toString();
         
         return (
             <View style={styles.screenContainer}>
+                <Animatable.Image 
+                    source={require('../assets/images/backclouds.png')}    
+                    style={styles.backdropImageClouds}
+                    animation='fadeIn'
+                />
                 <Image 
                     source={require('../assets/images/backdrop.png')}    
                     style={styles.backdropImage}
@@ -166,10 +188,11 @@ class Artist extends React.Component {
                     levelName={`${Strings.level} ${this.props.selected.level.levelNum}`}
                     categoryName={this.props.selected.category.categoryName}
                 />
+                
                 <View style={styles.container}>
                     <View style={styles.topContainer}>
 
-                            {this.renderBabyface()}
+                        {this.renderBabyface()}
                         
                         <View style={styles.helpContainer}>
                             <HelpButton onPress={this.clickRemoveOption.bind(this)} />
@@ -178,12 +201,15 @@ class Artist extends React.Component {
                     </View>
 
                     <View style={styles.optionsContainer}>
-                        
                         {this.renderOptionList()}
-
                     </View>       
 
                 </View>
+
+                <View style={styles.shareButton}>
+                    <ShareButton shareContent={this.state.shareLinkContent} />
+                </View>
+
                 <Confirm
                     visible={this.state.optionsModal}
                     onAccept={this.onAcceptOptionsModal.bind(this)}
@@ -192,10 +218,10 @@ class Artist extends React.Component {
                 />
 
                 <Confirm
+                    nsf
                     visible={this.state.coinsModal}
                     onAccept={this.onAcceptCoinsModal.bind(this)}
                     onDecline={this.onDeclineCoinsModal.bind(this)}
-                    nsf
                 />
 
                 <Confirm
@@ -206,7 +232,6 @@ class Artist extends React.Component {
                     {this.state.confirmOkModalMessage}
                 </Confirm>
 
-                <BannerSpace />
             </View>       
         );
     }
@@ -216,8 +241,12 @@ const styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
         backgroundColor: Config.colorPrimary50,
-        // marginBottom: Config.bannerHeight,
-        // marginBottom: 60,
+    },
+    backdropImageClouds: {
+        position: 'absolute',
+        width: Config.deviceWidth,
+        height: Config.deviceHeight,
+        bottom: 0,
     },
     backdropImage: {
         position: 'absolute',
@@ -228,10 +257,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        // alignSelf: 'center',
-        // alignSelf: 'stretch',
-        // borderWidth: 5,
-        // borderColor: 'black',
     },
     topContainer: {
         flex: 0,
@@ -239,16 +264,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     helpContainer: {
-        // flex: 1,
         position: 'absolute',
-        // left: 300,
-        // marginRight: 25,
         right: 0,
         bottom: 0,
     },
     optionsContainer: {
         flex: 1,
-    }
+    },
+    shareButton: {
+        margin: 10,
+        flex: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
 });
 
 // makes state available as props
@@ -258,45 +286,12 @@ const mapStateToProps = state => {
         coins: state.coins,
         accessories: state.accessories,
         gamesounds: state.gamesounds,
-        // confirmOkMessage: 'this is a confirmOK message',
     };
 };
 
 export default connect(mapStateToProps, { 
-    // fetchGamesounds, 
     fetchChallengeShortSound, 
     fetchChallengeLongSound, 
     removeWrongOption, 
     saveUserInfoToFirebase,
 })(Artist);
-
-
-        // get list of options from props
-        // const optionList = this.props.selected.artistOptions.map((option, i) => {
-        //     // function that renders each option
-        //     if (option.hide) {
-        //         // inactive button
-        //         return (
-        //             <ButtonOptionDisabled key={i}>
-        //                 -
-        //             </ButtonOptionDisabled>
-        //         );
-        //     }
-        //     // standard option button
-        //     return (
-        //         <ButtonOption key={i} correct={option.correct} onPress={() => { this.clickOption(option); }}>
-        //             {option.name}
-        //         </ButtonOption>
-        //     );
-        // });
-            
-                    // <Button onPress={() => { this.props.removeWrongOption(this.props.selected.artistOptions, 'artist'); }}>
-                    //     REMOVE 1 WRONG
-                    // </Button>
-                            // onPress={() => { this.props.removeWrongOption(this.props.selected.artistOptions, 'artist'); }}
-                // <Button onPress={() => this.setState({ showModal: !this.state.showModal })}>
-                //         show modal
-                //     </Button>
-                            // onPress={() => this.setState({ optionsModal: !this.state.optionsModal })}
-                // console.log('this props: ', this.props);
-        // const list = this.renderOptionList.bind(this);

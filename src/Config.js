@@ -70,6 +70,10 @@ export default Config;
 /*
 ** levels of storage **
 
+// path to device data
+// file:///Users/dereklloyd/Library/Developer/CoreSimulator/Devices/81C10E70-AD5A-4937-B5E3-4BBC8B093C79/data/Containers/Data/Application/4E43317C-90AF-4ED4-8016-DAD891CF7215/Documents/RCTAsyncLocalStorage_V1/manifest.json
+
+
 https://github.com/s-yadav/react-number-format
 
 firebase

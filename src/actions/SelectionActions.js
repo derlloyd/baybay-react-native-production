@@ -4,15 +4,7 @@
 
 import firebase from 'firebase';
 
-// import { NativeModules } from 'react-native';
-// // import { Actions } from 'react-native-router-flux';
-// // for fetching IOS in app purchase options
-
-// const { InAppUtils } = NativeModules;
-
 import { 
-    // FETCH_CATEGORIES, 
-    // SHORTSOUND_LOADED,
     CATEGORY_UPDATE, 
     LEVEL_UPDATE, 
     CHALLENGE_UPDATE, 
@@ -22,9 +14,6 @@ import {
     FETCH_ALL_CHALLENGES, 
     FETCH_ALL_CATEGORIES,
     BUY_REMOVE_OPTION, 
-    // GET_COINS_PURCHASE_OPTIONS,
-    // FETCH_ALL_GAMESOUNDS,
-    // FETCH_AND_REORDER_ALL_CHALLENGES,
  } from './types';
  
 
@@ -79,36 +68,6 @@ export const fetchInitialLevels = () => {
         });
     };
 };
-
-// called from first categories screen, return coin purchase options
-// -------------------------------------------------------------------------
-// export const fetchAllCoinsPurchaseOptions = () => {
-//     return (dispatch) => {
-//         const products = [
-//             'com.BayBay.Purchase.Coin1000',
-//             'com.BayBay.Purchase.Coin2500',
-//             'com.BayBay.Purchase.Coin7000',
-//             'com.BayBay.Purchase.Coin16000',
-//             ];
-//         InAppUtils.loadProducts(products, (error, result) => {
-//             console.log('result: ', result);
-//             dispatch({ type: GET_COINS_PURCHASE_OPTIONS, payload: result });
-//    //update store here.
-//     });
-//     //     firebase.database().ref('/coins')
-//     //     .on('value', snapshot => {
-//     //         dispatch({ type: GET_COINS_PURCHASE_OPTIONS, payload: snapshot.val() });
-//     //     });
-//     // };
-// };
-// export const fetchAllCoinsPurchaseOptions = () => {
-//     return (dispatch) => {
-//         firebase.database().ref('/coins')
-//         .on('value', snapshot => {
-//             dispatch({ type: GET_COINS_PURCHASE_OPTIONS, payload: snapshot.val() });
-//         });
-//     };
-// };
 
 // called from Categories screen, when user clicks a category
 // -------------------------------------------------------------------------
@@ -178,7 +137,7 @@ export const removeWrongOption = (options, type) => {
     // if possiblehides is empty (length = 0), every available option is hidden
     // dispatch user an error 'cant remove any more options'
     if (possibleHides.length === 0) {
-        console.log('TO USER: NO MORE OPTIONS TO REMOVE');
+        // console.log('TO USER: NO MORE OPTIONS TO REMOVE');
         return (dispatch) => {
             dispatch({ type: null, payload: 'No more wrong options to remove' });
         };
@@ -214,121 +173,3 @@ export const removeWrongOption = (options, type) => {
         dispatch({ type: BUY_REMOVE_OPTION });
     };
 };
-
-
-
-
-
-
-// ACCESSORIES are now stored in Config file
-// reason is that the Image source require(image) cannot take a dynamic string, has to be hard coded
-// http://stackoverflow.com/questions/30854232/react-native-image-require-module-using-dynamic-names
-// called from welcome screen, get all info for all accessories
-// -------------------------------------------------------------------------
-// export const fetchAllAccessories = () => {
-//     return (dispatch) => {
-//         firebase.database().ref('/accessories')
-//             .on('value', snapshot => {
-//                 // console.log('next------: ', snapshot.val());
-//                 dispatch({ type: FETCH_ALL_ACCESSORIES, payload: snapshot.val() });
-//             }, (error) => {
-//                 console.log('error: ', error);
-//             });
-//     };
-// };
-
-
-// called from Artist or Song
-// export const purchaseWrongOption = () => {
-//     return { type: BUY_REMOVE_OPTION };
-// };
-
-// const payForWrongOption = () => {
-//     return { type: BUY_REMOVE_OPTION };
-// };
-
-// export const challengeIdUpdate = (challengeId) => {
-//     // update the challenge Id in the state, then switch screens
-//     return {
-//         type: CHALLENGEID_UPDATE, 
-//         payload: challengeId
-//     };
-// };
-
-// in settings, called from Course Create
-// export const courseCreate = ({ name, phone, shift, desc, videoId }) => {
-//     // get current user from firebase
-//     const { currentUser } = firebase.auth();
-
-//     return (dispatch) => {
-//         // path to json db, add record then
-//         firebase.database().ref('/courses')
-//             .push({ name, phone, shift, desc, videoId, owner: currentUser.uid })
-//             .then((result) => {
-//                 console.log('this is the result of pushing to db: ', result); 
-
-//                 // dispatch action that resets form
-//                 dispatch({ type: COURSE_CREATE });
-//                 // back to list type reset eliminates the back button
-//                 Actions.userInfo({ type: 'reset' });
-//             });
-//     };
-// };
-
-
-
-// called from My Courses (CourseList Component) - only get subscribed videos
-// --------------------------------------------------------------------------
-// export const courseFetch = () => {
-//     // this is async so use redux thunk, return a function with dispatch method as arg
-//     // get current user from firebase
-//     const { currentUser } = firebase.auth();
-
-//     return (dispatch) => {
-//         firebase.database().ref(`/users/${currentUser.uid}/courses`)
-//             // any time (for entire life cycle of app) any values are added to the db at this path
-//             // call the function with data result as snapshot object
-//             // its an object that describes data, not an array
-//             .on('value', snapshot => {
-//                 // dispatch an action
-//                 console.log(snapshot);
-//                 dispatch({ type: COURSE_FETCH_SUCCESS, payload: snapshot.val() });
-//             });
-//     };
-// };
-
-// export const courseSubscribe = ({ uid }) => {
-//     const { currentUser } = firebase.auth();
-//     return (dispatch) => {
-//         firebase.database().ref(`/users/${currentUser.uid}/courses/${uid}`)
-//             .push(true)
-//             .then(() => {
-//                 dispatch({ type: COURSE_SAVE_SUCCESS });
-//                 Actions.courseList({ type: 'reset' });
-//             });
-//     };
-// };
-
-// export const courseUnSubscribe = ({ uid }) => {
-//     const { currentUser } = firebase.auth();
-//     return () => {
-//         firebase.database().ref(`/users/${currentUser.uid}/courses/${uid}`)
-//             .remove()
-//             .then(() => {
-//                 Actions.courseList({ type: 'reset' });
-//             });
-//     };
-// };
-
-// called from first categories screen, get all info for all challenges
-// -------------------------------------------------------------------------
-// export const fetchAllChallenges = () => {
-//     // console.log('fetchallchallenges: ', this.state);
-//     return (dispatch) => {
-//         firebase.database().ref('/challenges')
-//             .on('value', snapshot => {
-//                 // console.log('cat actions: ', snapshot.val());
-//                 dispatch({ type: FETCH_ALL_CHALLENGES, payload: snapshot.val() });
-//             });
-//     };
-// };

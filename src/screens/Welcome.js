@@ -1,22 +1,15 @@
 import React from 'react';
 import firebase from 'firebase';
-import { View, Text, Image, AsyncStorage, StatusBar, Linking, NetInfo, StyleSheet } from 'react-native';
+import { View, Text, Image, AsyncStorage, Alert, StatusBar, StyleSheet, NetInfo, Platform } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Player } from 'react-native-audio-toolkit';
-// import LocalizedStrings from 'react-native-localization';
 import * as Animatable from 'react-native-animatable';
+import FBSDK from 'react-native-fbsdk';
 
-// path to device data
-// file:///Users/dereklloyd/Library/Developer/CoreSimulator/Devices/81C10E70-AD5A-4937-B5E3-4BBC8B093C79/data/Containers/Data/Application/4E43317C-90AF-4ED4-8016-DAD891CF7215/Documents/RCTAsyncLocalStorage_V1/manifest.json
-
-// import Icon from 'react-native-vector-icons/FontAwesome';
 import { ButtonPlay, Babyface, Confirm, InfoModal, Spinner } from '../components';
 import { 
-    // loginWithFacebook, 
-    // playAnonymous, 
-    // signOut, 
     getInitialCoins, 
     fetchAllChallenges, 
     getInitialAccessories, 
@@ -26,40 +19,38 @@ import {
     fetchIntroBabysounds,
     fetchAllGamesounds,
     saveUserInfoToFirebase,
-    // mergeFirebaseInfoToAsyncStorage,
-    // fetchChallengeShortSound,
-    // fetchAllCoinsPurchaseOptions, 
 } from '../actions';
 import Config from '../Config';
 import Strings from '../Strings';
-
-const FBSDK = require('react-native-fbsdk');
 
 const { LoginButton, AccessToken } = FBSDK;
 
 const animationSchema = {
   0: {
-    // rotateZ: '0deg',
     scale: 1,
     opacity: 0.75,
   },
   0.5: {
-    // rotateZ: '0deg',
     scale: 1.05,
     opacity: 1,
   },
   1: {
-    // rotateZ: '22.5deg',
     scale: 1,
     opacity: 0.75,
   },
 };
-// react-native-flags to change languages
-
-// const title = require('../assets/images/title.png');
 
 class Welcome extends React.Component {
-    state = { okModal: false, okModalText: 'ok', infoModal: false, babyClicks: 0 }
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            okModal: false, 
+            okModalText: 'ok', 
+            infoModal: false, 
+            babyClicks: 0,
+        };
+    }
 
     componentWillMount() {
         // hide status bar for all scenes
@@ -90,30 +81,30 @@ class Welcome extends React.Component {
     }
     onFbLoginFinished(error, result) {
         if (error) {
-            console.log('facebook login has error: ', result.error);
+            // console.log('facebook login has error: ', result.error);
         } else if (result.isCancelled) {
-            console.log('facebook login cancelled.');
+            // console.log('facebook login cancelled.');
         } else {
             AccessToken.getCurrentAccessToken().then(
                 (data) => {
-                    console.log('facebook log in success');
+                    // console.log('facebook log in success');
 
                     const credential = firebase.auth.FacebookAuthProvider.credential(data.accessToken.toString());
                     firebase.auth().signInWithCredential(credential).then((user) => {
-                        console.log('Firebase Sign In Success', user.uid);
+                        // console.log('Firebase Sign In Success', user.uid);
 
                         // check if there is already saved data in firebase, if so, merge it with current data
                         firebase.database().ref('users/' + user.uid + '/coins').once('value').then((snapshot) => {
-                            console.log('found coins ', snapshot.val());
+                            // console.log('found coins ', snapshot.val());
                             if (snapshot.val() === null) {
-                                console.log('there was no saved data in firebase ', snapshot.val());
+                                // console.log('there was no saved data in firebase ', snapshot.val());
                             } else {
-                                console.log('data in firebase found, load it');
+                                // console.log('data in firebase found, load it');
                                 this.getFirebaseData(user.uid);
                             }
                         });
                     }, (err) => {
-                        console.log('Firebase Sign In Error', err);
+                        // console.log('Firebase Sign In Error', err);
                     }).then(() => {
                         // finally switch screens
                         Actions.categories();
@@ -123,8 +114,10 @@ class Welcome extends React.Component {
         }
     }
     onFbLogoutFinished() {
-        console.log('facebook logged out.');
-        firebase.auth().signOut().then(() => console.log('firebase logged out'));
+        // console.log('facebook logged out.');
+        firebase.auth().signOut().then(() => { 
+            // console.log('firebase logged out'); 
+        });
     }
     getFirebaseData(uid) {
         const newObj = {};
@@ -159,7 +152,7 @@ class Welcome extends React.Component {
                         }
                     })
                     .then(() => {
-                        console.log('from firebase', newObj);
+                        // console.log('from firebase', newObj);
                         // data from firebase is now loaded into asyncStorage
                         // now load async to redux state
                         this.loadAsyncData();
@@ -168,87 +161,13 @@ class Welcome extends React.Component {
             });
         });
     }
-    //     const newObj = {};
-    //     firebase.database().ref('users/' + uid + '/coins').once('value').then((snapshot) => {
-    //         newObj.coins = snapshot.val();
-    //     })
-    //     .then(() => {
-    //         firebase.database().ref('users/' + uid + '/levels').once('value').then((snapshot) => {
-    //             newObj.levels = snapshot.val();
-    //         })
-    //         .then(() => {
-    //             firebase.database().ref('users/' + uid + '/challenges').once('value').then((snapshot) => {
-    //                 newObj.challenges = snapshot.val();
-    //             })
-    //             .then(() => {
-    //                 firebase.database().ref('users/' + uid + '/accessories').once('value').then((snapshot) => {
-    //                     newObj.accessories = snapshot.val();
-    //                 });
-    //             });
-    //         });
-    //     });
-
-    //     return newObj;
-    // }
 
     clearLongSounds() {
         // delete challenge long sound mp3s to save space
         RNFetchBlob.fs.unlink(Config.localChallengesLong).then(() => {
-            console.log('cleared: ', Config.localChallengesLong);
+            // console.log('cleared: ', Config.localChallengesLong);
         });
-        // delete challenge short sound mp3s to save space
-        // RNFetchBlob.fs.unlink(Config.localChallenges).then(() => {
-        //     console.log('cleared: ', Config.localChallenges);
-        // });
     }
-    // loadObjData(data) {
-    //     console.log('loadObjData..............', data);
-    //     // sends data from object into redux state
-    //     if (data.coins != null) {
-    //         this.props.getInitialCoins(Number(data.coins));
-    //     }
-    //     if (data.accessories != null) {
-    //         this.props.getInitialAccessories(data.accessories);
-    //     }
-    //     if (data.challenges != null) {
-    //         this.props.getInitialChallenges(data.challenges);
-    //     }
-    //     if (data.levels != null) {
-    //         this.props.getInitialLevels(data.levels);
-    //     }
-    // }
-    // getAsyncData() {
-    //     const newObj = {};
-
-    //     AsyncStorage.getItem('coins', (err, coins) => {
-    //         if (coins) {
-    //             newObj.coins = coins;
-    //         }
-    //     })
-    //     .then(() => {
-    //         AsyncStorage.getItem('accessories', (err, accessories) => {
-    //             if (accessories) {
-    //                 newObj.accessories = accessories;
-    //             }
-    //         })
-    //         .then(() => {
-    //             AsyncStorage.getItem('challenges', (err, challenges) => {
-    //                 if (challenges) {
-    //                     newObj.challenges = challenges;
-    //                 }
-    //             })
-    //             .then(() => {
-    //                 AsyncStorage.getItem('levels', (err, levels) => {
-    //                     if (levels) {
-    //                         newObj.levels = levels;
-    //                     }
-    //                 });
-    //             });
-    //         });
-    //     });
-
-    //     return newObj;
-    // }
     loadAsyncData() {
         // get users' coins from async storage, if they exist
         AsyncStorage.getItem('coins', (err, coins) => {
@@ -287,16 +206,42 @@ class Welcome extends React.Component {
     }
     checkInternet() {
         // check if app can connect to baybay website
-        Linking.canOpenURL(Config.baybayWebsite).then(supported => {
-            // supported and online in ios simulator
-            if (!supported) {
-                this.setState({ okModalText: Strings.sorryNoInternet });
-                this.setState({ okModal: true });
-            } else {
-                console.log('Linking.canOpenURL is supported, device online');
-            }
-            }).catch(err => console.error('An error occurred', err));
+        // Linking.canOpenURL(Config.baybayWebsite)
+        // .then(supported => {
+        //     // supported and online in ios simulator
+        //     if (!supported) {
+        //         Alert.alert(Strings.sorryNoInternet);
+        //         // this.setState({ okModalText: Strings.sorryNoInternet });
+        //         // this.setState({ okModal: true });
+        //     } else {
+        //         // console.log('Linking.canOpenURL is supported, device online');
+        //     }
+        // })
+        // .catch(err => {
+        //     // console.error('An error occurred', err);
+        // });
 
+        const handleFirstConnectivityChange = (isConnected) => {
+            // console.log('netInfo returns ', isConnected);
+            if (!isConnected) {
+                Alert.alert(Strings.sorryNoInternet);
+                // this.setState({ okModalText: Strings.sorryNoInternet });
+                // this.setState({ okModal: true });
+            }
+            // NetInfo.isConnected.removeEventListener('change', handleFirstConnectivityChange);
+        };
+
+        if (Platform.OS === 'ios') {
+            NetInfo.isConnected.addEventListener('change', handleFirstConnectivityChange);
+        } else {
+            NetInfo.isConnected.fetch().then(isConnected => {
+                if (!isConnected) {
+                    Alert.alert(Strings.sorryNoInternet);
+                    // this.setState({ okModalText: Strings.sorryNoInternet });
+                    // this.setState({ okModal: true });
+                }
+            });
+        }
         // NetInfo.fetch().done((reach) => {
         //     console.log('NetInfo.fetch result ', reach);
         // });
@@ -307,26 +252,10 @@ class Welcome extends React.Component {
         //         this.setState({ okModalText: Strings.sorryNoInternet });
         //         this.setState({ okModal: true });
         //     }
-        //     console.log('NetInfo.isconnected says device is ', (isConnected ? 'online' : 'offline'));
+        //     // console.log('NetInfo.isconnected says device is ', (isConnected ? 'online' : 'offline'));
         // });
     }
-    deleteAsyncChallenges() {
-        // const uid = firebase.auth().currentUser.uid;
-        // // AsyncStorage.removeItem('challenges');
-        // // const uid = firebase.auth().currentUser.uid;
-        // // firebase.database().ref('users/' + uid + '/levels').set(this.props.levels);
-        // // AsyncStorage.removeItem('challenges');
-        // // AsyncStorage.removeItem('shortsounds');
-        // firebase.database().ref('users/' + uid + '/coins').once('value').then((snapshot) => {
-        //     console.log('coins from firebase ', snapshot.val());
-        // });
-        // this.props.mergeFirebaseInfoToAsyncStorage(uid, this.loadAsyncData.bind(this));
-        // console.log('deleted challenges, now reload');
-        // path to IOS localstorage
-// this.loadAsyncData();
-        // file:///Users/dereklloyd/Library/Developer/CoreSimulator/Devices/718F164D-6DC9-45A1-8243-2A71D3D25B84/data/Containers/Data/Application/F09DBFC1-D1C8-46B0-AEB9-222A6B46EA3A/Documents/RCTAsyncLocalStorage_V1/manifest.json
-    }
-    deleteLocalChallengesBlob() {
+    tempDeleteLocalChallengesBlob() {
         // delete challenge long sound mp3s to save space
         RNFetchBlob.fs.unlink(Config.localChallengesLong).then(() => {
             console.log('cleared: ', Config.localChallengesLong);
@@ -340,7 +269,7 @@ class Welcome extends React.Component {
             console.log('cleared: ', Config.localGamesounds);
         });
     }
-    deleteAsync() {
+    tempClearAsync() {
         AsyncStorage.removeItem('levels');
         AsyncStorage.removeItem('coins');
         AsyncStorage.removeItem('accessories');
@@ -402,16 +331,6 @@ class Welcome extends React.Component {
             );
     }
     render() {
-        // console.log('props ', this.props);
-                    // {/*<Animatable.View 
-                    //     animation={animationSchema}
-                    //     iterationCount='infinite'
-                    //     style={styles.messageContainer}
-                    // >
-                    //     <Text style={styles.messageText}>
-                    //         {Strings.clickBayBayToHearHimSing}
-                    //     </Text>
-                    // </Animatable.View>*/}
         return (
             <View style={{ flex: 1, backgroundColor: Config.colorPrimary200 }}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
@@ -420,7 +339,6 @@ class Welcome extends React.Component {
                         source={require('../assets/images/backclouds.png')}    
                         style={styles.backdropImageClouds}
                         animation='fadeIn'
-                        // iterationCount="infinite"
                     />
 
                     <Image 
@@ -446,16 +364,13 @@ class Welcome extends React.Component {
 
                     <View style={styles.loginButtonContainer}>
                         <LoginButton
-                            // style={styles.loginButton}
                             readPermissions={['public_profile']}
-                            // readPermissions={["email","public_profile","friends"]}
                             // publishPermissions={['publish_actions']}
                             onLoginFinished={this.onFbLoginFinished.bind(this)}
                             onLogoutFinished={this.onFbLogoutFinished.bind(this)} 
                         />
                     </View>
-                    
-                    
+
                 </View>
 
                 <InfoModal
@@ -474,12 +389,11 @@ class Welcome extends React.Component {
         );
     }
 }
-                    // {/*<Text style={{ margin: 5, borderWidth: 1, fontFamily: Config.fontMain }} onPress={this.deleteAsync.bind(this)}>
-                    //     clear asyncStorage
+                    // {/*<Text onPress={() => this.tempClearAsync()}>
+                    //     delete async
                     // </Text>
-                    
-                    // <Text style={{ margin: 5, borderWidth: 1 }} onPress={this.deleteLocalChallengesBlob.bind(this)}>
-                    //     blob delete challenges short and long and gamesounds
+                    // <Text onPress={() => this.tempDeleteLocalChallengesBlob()}>
+                    //     delete blob
                     // </Text>*/}
 
 const styles = StyleSheet.create({
@@ -492,17 +406,14 @@ const styles = StyleSheet.create({
     backdropImageClouds: {
         position: 'absolute',
         width: Config.deviceWidth,
-        // height: Config.deviceWidth / 2 * 3, //ratio of height/width is 3/2
         height: Config.deviceHeight,
         bottom: 0,
     },
     messageContainer: {
-        // margin: 5,
         borderWidth: 2,
         borderColor: Config.colorPrimary, 
         borderRadius: Config.babyfaceDimension / 4,
         backgroundColor: 'white',
-        // backgroundColor: Config.colorPrimary100,
         padding: 10,
         position: 'absolute', 
         right: 5, 
@@ -514,7 +425,6 @@ const styles = StyleSheet.create({
         color: Config.colorPrimary, 
         textAlign: 'center',
         fontFamily: Config.fontMain,
-        // fontSize: 10,
     },
     errorTextStyle: {
         marginTop: 20,
@@ -530,24 +440,17 @@ const styles = StyleSheet.create({
     },
     title: {
         alignSelf: 'center',
-        width: Config.deviceWidth - 20,
-        height: (Config.deviceWidth - 20) / 3,  // approx ratio is width = height * 3
+        width: Config.deviceWidth * 0.85,
+        height: (Config.deviceWidth * 0.85) / 3,  // approx ratio is width = height * 3
     },
     loginButtonContainer: {
         flex: 1,
         alignItems: 'center', 
         margin: 10, 
-        // borderWidth: 2,
-        // transform: [
-        //     { scale: 1.2 },
-        // ]
     },
     loginButton: {
-        // backgroundColor: 'blue',
-        // borderWidth: 4,
         flex: 1,
         width: Config.deviceWidth * 1 / 3,
-        // height: 50,
     },
 });
 
@@ -559,16 +462,10 @@ const mapStateToProps = state => {
         levels: state.levels,
         gamesounds: state.gamesounds,
         challenges: state.challenges,
-        // auth: state.auth,
-        // errorDetail, 
-        // loading 
     };
 };
 
 export default connect(mapStateToProps, {
-    // loginWithFacebook,
-    // signOut,
-    // playAnonymous,
     getInitialCoins,
     fetchAllChallenges,
     getInitialAccessories,
@@ -578,44 +475,4 @@ export default connect(mapStateToProps, {
     fetchAllGamesounds,
     fetchIntroBabysounds,
     saveUserInfoToFirebase,
-    // mergeFirebaseInfoToAsyncStorage,
-    // fetchChallengeShortSound,
-    // fetchAllCoinsPurchaseOptions,
 })(Welcome);
-
-        
-        // not necessary, for testing
-        // RNFetchBlob
-        //     .config({
-        //         // add this option that makes response data to be stored as a file,
-        //         // this is much more performant.
-        //         fileCache: true,
-        //         path: Config.localChallenges + songName,
-        //     })
-        //     .fetch('GET', Config.remoteChallenges + songNameEncoded, {
-        //     })
-        //     .then((res) => {
-        //         // console.log('The file saved to ', res.path());
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
-                // if (this.state.user) {
-        //     return (
-        //         <Button>
-        //             Sign Out
-        //         </Button>
-        //     );
-        // } 
-        // if (this.props.auth.loading) {
-        //     return (
-        //         <CardSection style={{ flexDirection: 'column', minHeight: 90 }}>
-        //             <Spinner size="large" />
-        //         </CardSection>
-        //     );
-        // }
-        // return (
-        //     <ButtonFb onPress={this.onFbButtonPress.bind(this)}>
-        //         Login Facebook
-        //     </ButtonFb>
-        // );

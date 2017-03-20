@@ -3,21 +3,21 @@ import firebase from 'firebase';
 import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
-// import awaitEach from 'await-each';
 import { Player } from 'react-native-audio-toolkit';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Header, BannerSpace } from '../components';
+
+import { Header } from '../components';
 import { challengeUpdate, resetShortSound, saveUserInfoToFirebase } from '../actions';
 import Config from '../Config';
 import Strings from '../Strings';
 
 class ChallengeGrid extends React.Component {
     constructor(props) {
-     super(props);
-     this.state = {
-        SwitchIsOn: false,      // false default off position to the left
-     };
-   }
+        super(props);
+        this.state = {
+            SwitchIsOn: false,      // false default off position to the left
+        };
+    }
     componentDidMount() {
         // reset value of props.selected.shortSoundLoaded to false
         this.props.resetShortSound();
@@ -140,7 +140,7 @@ class ChallengeGrid extends React.Component {
                     />
                     <Icon name="music" size={20} color={Config.colorAccent500} />
                 </View>
-                <BannerSpace />
+
             </View>       
         );
     }

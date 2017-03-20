@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, TouchableWithoutFeedback, View } from 'react-native';
+import { Image, TouchableWithoutFeedback } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Config from '../Config';
 
@@ -11,14 +11,6 @@ const happy = require('../assets/images/face.png');
 // Style depends on is prop accessoryname: true was passed to Babyface
 
 class Babyface extends React.Component {
-    // componentWillMount() {
-        // accessories now in Config, dont worry about this now
-
-        // for each accessory, check if it is loaded locally in assets
-        // then check if it is in localstorage
-        // if not, get it from remote storage
-        // if yes, render each one
-    // }
 
     onPressAction() {
         // perform passed onPress if there is one
@@ -77,9 +69,6 @@ class Babyface extends React.Component {
         return rendered;
     }
     render() {
-        // <Animatable.Text animation="wobble" iterationCount={1} direction="alternate">
-        // console.log('dome ', Config.babyfaceDimension);
-                // <Animatable.View animation="rubberBand" iterationCount={3} ref="view">
         return (
             <TouchableWithoutFeedback onPress={() => this.onPressAction()} style={[styles.buttonStyle, this.props.buttonStyle]}>
                 <Animatable.View ref="view">
@@ -94,25 +83,10 @@ class Babyface extends React.Component {
 
 const styles = {
     imageStyle: {
-        // alignSelf: 'center',
-        // color: '#007aff',   // '#007aff'
-        // fontSize: 16,
-        // fontWeight: '500',
         width: Config.babyfaceDimension,
         height: Config.babyfaceDimension,
-        // paddingTop: 10,
-        // paddingBottom: 10,
-        // borderWidth: 4,
-        // borderColor: 'orange',
     },
     buttonStyle: {
-        // flex: 0,    // expand to fill the space
-        // alignSelf: 'center',   // position self using flexbox rules
-        // justifyContent: 'center',
-        // backgroundColor: '#fff',
-        // borderRadius: 5,     // rounded corners
-        // borderWidth: 5,
-        // borderColor: 'red',
     },
     overlay: {
         width: Config.babyfaceDimension,
@@ -129,7 +103,6 @@ const styles = {
         left: 0,
         right: 0,
         top: 0,
-
     }
 };
 

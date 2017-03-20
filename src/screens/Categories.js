@@ -4,13 +4,21 @@ import { View, Text, StyleSheet, ScrollView, LayoutAnimation, TouchableOpacity }
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+
 import { Header, Card, Spinner, Confirm } from '../components';
 import { fetchAllCategories, saveUserInfoToFirebase, categoryUpdate, levelUpdate, coinsSubtract, saveLevel, saveInitialLevels } from '../actions';
 import Config from '../Config';
 import Strings from '../Strings';
 
 class Categories extends React.Component {
-    state = { buyModal: false, coinsModal: false, level: '' }
+    constructor(props) {
+        super(props);
+        this.state = {
+            buyModal: false, 
+            coinsModal: false, 
+            level: '',
+        };
+    }
 
     componentWillMount() {
         this.props.fetchAllCategories();
@@ -189,7 +197,6 @@ class Categories extends React.Component {
     }
     
     render() {
-        // console.log(this.props);
         return (
             <View style={styles.screenContainer}>
 
@@ -198,9 +205,11 @@ class Categories extends React.Component {
                     title="" 
                     coins={this.props.coins} 
                 />
+
                 <ScrollView>
                     {this.getCategories()}
                 </ScrollView>
+
                 <Confirm
                     visible={this.state.buyModal}
                     onAccept={this.onAcceptBuyModal.bind(this)}
@@ -209,10 +218,10 @@ class Categories extends React.Component {
                 />
 
                 <Confirm
+                    nsf
                     visible={this.state.coinsModal}
                     onAccept={this.onAcceptCoinsModal.bind(this)}
                     onDecline={this.onDeclineCoinsModal.bind(this)}
-                    nsf
                 />
             </View>       
         );
@@ -225,18 +234,14 @@ const styles = StyleSheet.create({
         backgroundColor: Config.colorPrimary100,
     },
     spinner: {
-        // flex: 1,
         marginTop: Config.deviceHeight / 3,
     },
     categoryStyle: { 
-        // alignSelf: 'stretch',
         flexDirection: 'row',
-        // backgroundColor: 'red',
         borderRadius: 5,
         padding: 8,
         borderWidth: 1,
         borderColor: Config.colorPrimary200,
-        // backgroundColor: Config.colorPrimary700,
         backgroundColor: 'white',
         marginLeft: 5,  // space between l and r
         marginRight: 5,
@@ -245,15 +250,11 @@ const styles = StyleSheet.create({
     categoryTopSection: { 
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        // flexDirection: 'row',
-        // borderColor: '#ddd',
         position: 'relative'
     },
     categoryTitleStyle: {
         color: Config.colorPrimary900,
-        // fontFamily: Config.fontMain,
         fontFamily: 'RifficFree-Bold',
-        // fontWeight: 'bold',
         fontSize: 18,
         paddingLeft: 10,
         opacity: 0.95,
@@ -262,7 +263,6 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: Config.colorPrimary900,
         paddingLeft: 10,
-        // fontStyle: 'italic',
         fontFamily: Config.fontMain,
         opacity: 0.44,          // secondary text 54% opacity
     },
@@ -271,12 +271,9 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch',
         marginTop: 5,   // space between
         padding: 3,
-        // borderBottomWidth: 1
     },
     levelStyle: { 
         backgroundColor: Config.colorPrimary800,
-        // borderWidth: 1,
-        // borderColor: '#ddd',    // light grey
         padding: 10,
         borderRadius: 5,
         flexDirection: 'row',
@@ -284,8 +281,6 @@ const styles = StyleSheet.create({
     },
     lockedLevelStyle: { 
         backgroundColor: 'grey',
-        // borderWidth: 1,
-        // borderColor: '#ddd',    // light grey
         padding: 10,
         borderRadius: 5,
         flexDirection: 'row',
@@ -302,17 +297,14 @@ const styles = StyleSheet.create({
     },
     levelPriceStyle: {
         color: 'white', 
-        // fontWeight: 'bold',
         fontSize: 16,
         fontFamily: Config.fontMain,
-        // paddingLeft: 10,
         paddingTop: 5,
         paddingRight: 2,
         opacity: 0.7,
     },
     levelNameStyle: {
         color: 'white', 
-        // fontWeight: 'bold',
         fontSize: 16,
         fontFamily: Config.fontMain,
         paddingLeft: 10,
@@ -327,14 +319,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
-    // console.log(state);
     return { 
         allCategories: state.allCategories, 
         selected: state.selected,
         coins: state.coins,
         levels: state.levels,
-        // categories: state.categories,
-        // auth: state.auth,
     };
 };
 

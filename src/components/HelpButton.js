@@ -7,10 +7,8 @@ import Config from '../Config';
 const HelpButton = ({ onPress }) => {
     return (
         <Animatable.View 
-            // ref="view" 
-            // style={{ flex: 1 }}
-            animation="pulse"
-            easing="ease" 
+            animation="swing"
+            easing="linear" 
             iterationCount="infinite"
         >
             <TouchableOpacity onPress={onPress} style={styles.container}>
@@ -28,13 +26,12 @@ const styles = StyleSheet.create({
         borderWidth: 1, 
         borderColor: Config.colorAccent900, 
         justifyContent: 'center', 
-        backgroundColor: Config.colorAccent700, 
+        backgroundColor: Config.colorAccent500, 
         borderRadius: Config.deviceWidth / 12,
     },
     text: {
         fontSize: 50, 
         fontFamily: Config.fontMain,
-        // fontWeight: 'bold', 
         color: 'white', 
         textAlign: 'center', 
         backgroundColor: 'transparent',
@@ -42,16 +39,3 @@ const styles = StyleSheet.create({
 });
 
 export { HelpButton };
-
-        // <View style={[styles.style, style]}>
-        //     <TouchableOpacity>
-        //         <Icon 
-        //             name="question-circle" 
-        //             onPress={onPress}
-        //             size={65} 
-        //             style={styles.mainIconStyle}
-        //             iconStyle={styles.iconStyle}
-        //             color={Config.colorAccent700}
-        //         />
-        //     </TouchableOpacity>
-        // </View>

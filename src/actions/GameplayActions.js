@@ -5,7 +5,6 @@
 import firebase from 'firebase';
 import { Platform, AsyncStorage } from 'react-native';
 import RNFetchBlob from 'react-native-fetch-blob';
-// import { Actions } from 'react-native-router-flux';
 import { 
     REWARD_CHALLENGE,
     GET_INITIAL_COINS,
@@ -55,7 +54,7 @@ const fetchBlob = (filename, id, localpath, remotepath, callback) => {
                 .fetch('GET', remotepath + filenameEncoded, {
                 })
                 .then((res) => {
-                    console.log('file saved to ', res.path());
+                    // console.log('file saved to ', res.path());
                     // add filename to localstorage to have a list of loaded babysounds
                     if (localpath === Config.localChallenges) {
                         AsyncStorage.mergeItem('shortsounds', JSON.stringify({ [id]: filename }));
@@ -66,11 +65,11 @@ const fetchBlob = (filename, id, localpath, remotepath, callback) => {
                     }
                 })
                 .catch((err) => {
-                    console.log('fetchBlob error: ', err);
+                    // console.log('fetchBlob error: ', err);
                 });
         })
         .catch((err) => {
-            console.log('fetchBlob error: ', err);
+            // console.log('fetchBlob error: ', err);
         });
 };
 
@@ -226,111 +225,3 @@ export const coinsSubtract = (coins) => {
         dispatch({ type: COINS_SUBTRACT, payload: coins.valueOf() });
     };
 };
-
-
-
-
-
-
-// export const playNextChallenge = () => {
-//     return (dispatch) => {
-//         // firebase.database().ref('/categories')                       TODO
-//             // .on('value', snapshot => {
-//                 // console.log('cat actions: ', snapshot.val());
-//                 dispatch({ type: PLAY_NEXT_CHALLENGE, payload: null });
-//             // });
-//     };
-// };
-
-
-// called from wrong screen componentDidMount with challengeId argument
-// -------------------------------------------------------------------------
-// export const challengeWrong = (id) => {
-//     // in WRONG screen, check if key value pair exists (true or false), if so, do nothing
-//     // if key/value does not exist, create id: FALSE to indicate that
-//     // the first time the user played, they guessed WRONG
-
-//     AsyncStorage.getItem(id, (err, result) => {
-//         if (err) {
-//             console.log(err);
-//         }
-//         if (result) {
-//             // key/value pair exists, true or false, do nothing, challenge already played
-//         } else {
-//             // add key/value to storage as false, played but not solved
-//             AsyncStorage.setItem(id, JSON.stringify(false));
-//         }
-//     });
-
-//     return (dispatch) => {
-//         // nothing to dispatch
-//         dispatch({ type: null, payload: null });
-//     };
-// };
-
-
-// export const categoryUpdate = (categoryId) => {
-//     return {
-//         type: CATEGORY_UPDATE,
-//         payload: categoryId
-//     };
-// };
-
-// export const levelUpdate = (levelId) => {
-//     // update the level in the state, then switch screens
-//     return {
-//         type: LEVEL_UPDATE, 
-//         payload: levelId 
-//     };
-// };
-
-// export const challengeUpdate = (challengeId) => {
-//     // update the level in the state, then switch screens
-//     return {
-//         type: CHALLENGE_UPDATE, 
-//         payload: challengeId 
-//     };
-// };
-// export const challengeCorrect2 = (id) => {
-//     // in CORRECT screen, check if key value pair exists (true or false), 
-//     // if TRUE or FALSE, change to true
-//     // if key/value does not exist, create id: TRUE AND credit 200 COINS to indicate that
-//     // the first time the user played, they guessed CORRECT
-//     AsyncStorage.getItem(id, (err, result) => {
-//         if (err) {
-//             console.log(err);
-//         }
-//         if (result) {
-//             // key/value pair exists, if true or false, change to true
-//             AsyncStorage.setItem(id, JSON.stringify(true));
-//         } else {
-//             // there was no result, first time played
-//             console.log('REWARD USER WITH COINS!! FIRST TRY SUCCESS');
-//             // set value to true
-//             AsyncStorage.setItem(id, JSON.stringify(true));
-//             // and reward user with coins
-            
-//             console.log('ok now dispathc');
-//             // challengeCorrectFirst();
-//             return (dispatch) => {
-//                 console.log('dispatching');
-//                 dispatch({ type: REWARD_CHALLENGE });
-//             };
-//         }
-//     });
-//     return (dispatch) => {
-//         // nothing to dispatch
-//         dispatch({ type: null, payload: null });
-//     };
-// };
-
-// this will be called from welcome screen              no more intro songs
-// -------------------------------------------------------------------------
-// export const fetchIntrosounds = () => {
-//     // check if intro exists in asyncStorage
-//     // if no, get it
-//     // fetchBlob(challenge.shortUrl, Config.localChallenges, Config.remoteChallenges);
-//     return (dispatch) => {
-//         dispatch({ type: null, payload: null });
-//     };
-// };

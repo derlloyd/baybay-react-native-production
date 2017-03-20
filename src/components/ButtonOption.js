@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
 import Config from '../Config';
@@ -11,11 +11,11 @@ class ButtonOption extends React.Component {
     
     render() {
         const { onPress, correct, disabled, style, children } = this.props;
-
+        
         let renderChildren = children;
 
         if (!children) {
-            renderChildren = '';
+            renderChildren = ' ';
         }
 
         return (
@@ -24,17 +24,16 @@ class ButtonOption extends React.Component {
                 style={{ flex: 1 }}
                 animation="zoomIn"
                 easing="ease" 
-                // iterationCount="infinite"
             >
-            <TouchableOpacity 
-                underlayColor={correct ? Config.colorAccent100 : Config.colorAccent100} 
-                onPress={onPress} 
-                style={disabled ? styles.buttonStyleDisabled : [styles.buttonStyle, style]}
-            >
-                <Text style={styles.textStyle}>
-                    {renderChildren.toUpperCase()}
-                </Text>
-            </TouchableOpacity>
+                <TouchableOpacity 
+                    underlayColor={correct ? Config.colorAccent100 : Config.colorAccent100} 
+                    onPress={onPress} 
+                    style={disabled ? styles.buttonStyleDisabled : [styles.buttonStyle, style]}
+                >
+                    <Text style={styles.textStyle}>
+                        {renderChildren}
+                    </Text>
+                </TouchableOpacity>
             </Animatable.View>
         );
     }
@@ -46,14 +45,10 @@ const styles = {
         textAlign: 'center',
         color: 'white',   // '#007aff'
         fontSize: 16,
-        // fontWeight: 'bold',
         fontFamily: Config.fontMain,
     },
     buttonStyle: {
         marginTop: 5,
-        // paddingTop: 10,
-        // paddingBottom: 10,
-        // borderBottomWidth: 4,
         flex: 1,    // expand to fill the space
         alignSelf: 'stretch',   // position self using flexbox rules
         justifyContent: 'center',
@@ -65,8 +60,6 @@ const styles = {
     },
     buttonStyleDisabled: {
         marginTop: 5,
-        // paddingTop: 10,
-        // paddingBottom: 10,
         flex: 1,    // expand to fill the space
         alignSelf: 'stretch',   // position self using flexbox rules
         justifyContent: 'center',

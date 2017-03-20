@@ -1,16 +1,12 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, LayoutAnimation } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 
 import { Coins } from './';
 import Config from '../Config';
-// import Strings from '../Strings';
 
 class Header extends React.Component {
-    componentWillUpdate() {
-        // LayoutAnimation.easeInEaseOut();
-    }
 
     render() {
         const { 
@@ -25,36 +21,28 @@ class Header extends React.Component {
         } = this.props;
         
         const backChevron = (
-            <View style={styles.backButton}>
-                <TouchableOpacity onPress={onPressBack}>
+            <TouchableOpacity onPress={onPressBack}>
+                <View style={styles.backButton}>
                     <Icon 
                         name="chevron-left"
                         size={30} 
                         color="white"
                     />
-                </TouchableOpacity>
-            </View>
+                </View>
+            </TouchableOpacity>
         );
 
         const backX = (
-            <View style={styles.backButton}>
-                <TouchableOpacity onPress={onPressBack}>
+            <TouchableOpacity onPress={onPressBack}>
+                <View style={styles.backButton}>
                     <Icon 
                         name="times"
                         size={40} 
                         color="white"
                     />
-                </TouchableOpacity>
-            </View>
+                </View>
+            </TouchableOpacity>
         );
-
-        // const challengeNum = (
-        //     <View style={styles.challengeNumContainer}>
-        //         <Text style={styles.challengeNumText}>
-        //             {challengeNumber}
-        //         </Text>
-        //     </View>
-        // );
 
         const middleText = (
             <View style={styles.middleTextContainer}>
@@ -74,8 +62,6 @@ class Header extends React.Component {
 
             </View>
         );
-                    // {challengeNumber ? <Text> - {challengeNumber}</Text> : null}
-                    // {challengeNumber ? challengeNum : null}
 
         return (
             <View style={styles.containerStyle}>
@@ -102,7 +88,6 @@ const styles = StyleSheet.create({
         height: Config.headerHeight,
         flexDirection: 'row',
         justifyContent: 'space-between', 
-        // flex: 1,
         alignItems: 'center',
         backgroundColor: Config.colorPrimary,
         shadowColor: '#000000',
@@ -115,36 +100,24 @@ const styles = StyleSheet.create({
         paddingTop: Config.statusBarPadding,
     },
     backButton: {
-        // flex: 1,
         width: 50,
         marginLeft: 5,
         alignSelf: 'stretch',
         alignItems: 'flex-start',
         justifyContent: 'center',
         backgroundColor: 'transparent',
-        // borderWidth: 1,
     },
     textStyle: {
         color: 'white',
-        // alignItems: 'center',
         fontFamily: Config.fontMain,
         fontSize: 20,
-        // fontWeight: 'bold',
     },
     middleTextContainer: {
         width: Config.deviceWidth * 0.5, 
-        // marginLeft: 15,             // trying to center middleText
-        // height: Config.headerHeight / 2, 
-        // marginTop: 15,
-        // borderWidth: 1,
-        // backgroundColor: 'transparent',
     },
     middleTextTopContainer: {
-        // width: 200, 
-        // height: Config.headerHeight / 2,
     },
     middleTextCategoryName: {
-        // textAlign: 'center', 
         fontFamily: Config.fontMain,
         fontSize: 18, 
         opacity: 0.87, 
@@ -152,30 +125,13 @@ const styles = StyleSheet.create({
     middleTextBottomContainer: {
         backgroundColor: 'transparent',
         flexDirection: 'row', 
-        // justifyContent: 'center',
         alignItems: 'center',
         width: 200, 
-        // height: Config.headerHeight / 2,
     },
     middleTextLevelName: {
-        // textAlign: 'center', 
         fontFamily: Config.fontMain,
         color: 'white', 
-        // fontWeight: 'bold',
     },
-    // challengeNumContainer: {
-    //     // borderWidth: 2, 
-    //     backgroundColor: Config.colorPrimary800,
-    //     borderColor: 'white',
-    //     marginLeft: 10,
-    //     padding: 5, 
-    //     borderRadius: 5,
-    // },
-    // challengeNumText: {
-    //     textAlign: 'center', 
-    //     color: 'white', 
-    //     fontWeight: 'bold',
-    // },
 });
 
 export { Header };

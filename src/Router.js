@@ -3,8 +3,6 @@
 import React from 'react';
 import { Scene, Router } from 'react-native-router-flux';
 import { Text } from 'react-native';
-// import { View, Text, Platform, StyleSheet, Navigator } from 'react-native';
-// import Icon from 'react-native-vector-icons/FontAwesome';
 
 import Welcome from './screens/Welcome';
 import Categories from './screens/Categories';
@@ -13,9 +11,7 @@ import Artist from './screens/Artist';
 import Song from './screens/Song';
 import Wrong from './screens/Wrong';
 import Correct from './screens/Correct';
-// import Info from './screens/Info';
 import Settings from './screens/Settings';
-// import AdmobExample from './screens/Admob';
 import Config from './Config';
 
 // Simple component to render something in place of icon
@@ -36,17 +32,6 @@ const styles = {
 };
 
 const RouterComponent = () => {
-    // if no 'initial' tag, Router uses order of declaration
-            // sceneStyle={{ paddingTop: Navigator.NavigationBar.Styles.General.TotalNavHeight, flex: 1 }} 
-            // titleStyle={{ color: 'white' }} 
-            // navigationBarStyle={{ backgroundColor: Platform.OS === 'ios' ? 'blue' : 'darkblue' }}
-                // <Scene 
-                //     key="info" 
-                //     component={Info} 
-                //     // animation="fade"
-                //     // title="Guess the ARTIST" 
-                //     // onLeft={() => Actions.pop(1)} 
-                // />
     return (
         <Router 
             sceneStyle={{ backgroundColor: 'white' }} 
@@ -59,7 +44,6 @@ const RouterComponent = () => {
                     component={Welcome} 
                     hideNavBar 
                     initial 
-                    // title="" 
                 />
 
                 <Scene
@@ -134,45 +118,5 @@ const RouterComponent = () => {
         </Router>
     );
 };
-                    // <Scene key="tab1" title="Coins" icon={TabIcon}>
-                    //     <Scene 
-                    //         key="settings_coins" 
-                    //         title="Coins" 
-                    //         component={SettingsCoins} 
-                    //     />
-                    // </Scene>
 
 export default RouterComponent;
-
-// const styles = StyleSheet.create({
-//   navBar: {
-//     flex: 1,
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     backgroundColor: 'red', // changing navbar color
-//   },
-//   navTitle: {
-//     color: 'white', // changing navbar title color
-//   },
-//   routerScene: {
-//     paddingTop: Navigator.NavigationBar.Styles.General.NavBarHeight, // some navbar padding to avoid content overlap
-//   },
-// })
-
-            // </Scene>
-            
-            // <Scene key="settings">
-
-// separate scenes with nested components, back button shows only within scenes
-// <Scene key="wrong">
-//                 <Scene key="wrongscene" hideNavBar title="Wrong answer" component={Wrong} />
-//             </Scene>
-            
-//             <Scene key="correct">
-//                 <Scene key="correctscene" hideNavBar title="Correct answer" component={Correct} />
-//             </Scene>
-            
-//             <Scene key="settings">
-//                 <Scene key="settingsscene" hideNavBar title="Settings" component={Settings} />
-//             </Scene>

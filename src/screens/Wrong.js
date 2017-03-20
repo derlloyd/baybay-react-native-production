@@ -1,28 +1,28 @@
 import React from 'react';
 import firebase from 'firebase';
-import { View, Text, TouchableOpacity, Platform, Image, LayoutAnimation, AsyncStorage, Linking } from 'react-native';
+import { View, Text, LayoutAnimation, AsyncStorage, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { Player } from 'react-native-audio-toolkit';
-// import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 
-import { ButtonRetry, Babyface, BannerSpace, Header, Confirm } from '../components';
+import { ButtonRetry, Babyface, Header, Confirm } from '../components';
 import Config from '../Config';
 import Strings from '../Strings';
 import { rewardChallenge, saveChallenge, challengeUpdate, saveUserInfoToFirebase } from '../actions';
 
 class Wrong extends React.Component {
-    state = { 
-        // rewardMessageVisible: false,
-        // artistName: '', 
-        // songName: '', 
-        challengeNum: '', 
-        dance: true,
-        babyClicks: 0,
-        confirmOkModal: false,
-        confirmOkModalMessage: '', 
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            challengeNum: '', 
+            displayMessage: '', 
+            dance: true,
+            babyClicks: 0,
+            confirmOkModal: false,
+            confirmOkModalMessage: '', 
+        };
+    }
 
     componentWillMount() {
         LayoutAnimation.spring();
@@ -32,12 +32,22 @@ class Wrong extends React.Component {
 
         // display message if first time played
         AsyncStorage.getItem('challenges', (err, challenges) => {
+            // console.log('async challenges result: ', challenges);
             if (!challenges) {
                 // there are no values, this is the first true, show messsage
                 return this.setState({ 
-                    confirmOkModal: !this.state.confirmOkModal, 
+                    confirmOkModal: true, 
                     confirmOkModalMessage: Strings.strokeBaybayToStopCrying, 
                 });
+            }
+            if (challenges) {
+                if (challenges.includes('false') === false) {
+                    // there are no false values, this will be the first time user got one wrong
+                    return this.setState({ 
+                        confirmOkModal: true, 
+                        confirmOkModalMessage: Strings.strokeBaybayToStopCrying, 
+                    });
+                }
             }
         });
 
@@ -46,9 +56,8 @@ class Wrong extends React.Component {
         const challengeNumber = ((i + 1) < 10) ? `0${(i + 1).toString()}` : (i + 1).toString();
         
         this.setState({ 
-            // artistName: this.props.selected.challenge.artistName, 
-            // songName: this.props.selected.challenge.songName,
             challengeNum: challengeNumber,
+            displayMessage: this.getDisplayMessage(),
          });
     }
     componentDidMount() {
@@ -58,9 +67,9 @@ class Wrong extends React.Component {
         const id = this.props.selected.challenge.challengeId;
 
         if (this.props.challenges.hasOwnProperty(id)) {
-            console.log('value exists, played before');
+            // console.log('value exists, played before');
         } else {
-            console.log('neverplayed, add FALSE');
+            // console.log('neverplayed, add FALSE');
             this.props.saveChallenge(id, false);
         }
     }
@@ -81,12 +90,31 @@ class Wrong extends React.Component {
     onAcceptConfirmOKModal() {
         this.setState({ confirmOkModal: false });
     }
+
     onPressTryAgain() {
         // stop if playing
         if (this.crySound) {
             this.crySound.destroy();
         }
         Actions.pop();
+    }
+
+    getDisplayMessage() {
+        // possible displayed messages
+        // not all languages have 17 options
+        const messages = [
+            Strings.youreWrong,
+            Strings.youreWrong2 ? Strings.youreWrong2 : Strings.youreWrong,
+            Strings.youreWrong3 ? Strings.youreWrong3 : Strings.youreWrong,
+            Strings.youreWrong4 ? Strings.youreWrong4 : Strings.youreWrong,
+            Strings.youreWrong5 ? Strings.youreWrong5 : Strings.youreWrong,
+            Strings.youreWrong6 ? Strings.youreWrong6 : Strings.youreWrong,
+            Strings.youreWrong7 ? Strings.youreWrong7 : Strings.youreWrong,
+            Strings.youreWrong8 ? Strings.youreWrong8 : Strings.youreWrong,
+        ];
+
+        // return random message to display
+        return messages[Math.floor(Math.random() * messages.length)].toUpperCase();
     }
     playCrySound() {
         // get random songname
@@ -129,7 +157,6 @@ class Wrong extends React.Component {
                         isCrying
                         onPress={this.clickCryingBaby.bind(this)} 
                         animated='flash'
-                        // accessories={this.props.accessories} 
                     />
                 </Animatable.View>
             );
@@ -142,10 +169,6 @@ class Wrong extends React.Component {
             >
                 <Babyface
                     onPress={this.playMidSuccessSound.bind(this)}
-                    // isCrying 
-                    // animated='flash'
-                    // onPress={this.playChallengeBabySound.bind(this)} 
-                    // accessories={this.props.accessories} 
                 />
             </Animatable.View>
         );
@@ -170,10 +193,8 @@ class Wrong extends React.Component {
         // show message until clicked 3 times
         if (this.state.babyClicks <= 3) {
             return (
-                <Animatable.View 
-                    // animation='fadeOut'
-                >
-                    <Text style={styles.textMessage}>{Strings.youreWrong.toUpperCase()}</Text>
+                <Animatable.View>
+                    <Text style={styles.textMessage}>{this.state.displayMessage}</Text>
                 </Animatable.View>
             );
         }
@@ -181,20 +202,18 @@ class Wrong extends React.Component {
                 <Animatable.View 
                     animation='fadeOut'
                 >
-                    <Text style={styles.textMessage}>{Strings.youreWrong.toUpperCase()}</Text>
+                    <Text style={styles.textMessage}>{this.state.displayMessage}</Text>
                 </Animatable.View>
             );
     }
    
     render() {
-        // console.log(this.props);
         return (
             <View style={styles.screenContainer}>
                 
                 <Animatable.Image 
                     source={require('../assets/images/backclouds.png')}    
                     style={styles.backdropImage}
-                    // animation='fadeIn'
                     iterationCount="infinite"
                 />
 
@@ -208,20 +227,15 @@ class Wrong extends React.Component {
                     categoryName={this.props.selected.category.categoryName}
                 />
 
-
                 {this.renderBaby()}
                 
                 <View style={styles.container}>
-
                     {this.renderWrongMessage()}
-                    
                 </View>
 
                 <View style={styles.containerBottom}>
                     {this.renderRetryButton()}
                 </View>
-
-                <BannerSpace />
 
                 <Confirm
                     ok
@@ -235,10 +249,8 @@ class Wrong extends React.Component {
         );
     }
 }
-                    // <Text style={styles.textMessage}>{Strings.youreWrong.toUpperCase()}</Text>
-                        // <ButtonItunes onPress={this.onPressItunesButton.bind(this)} />
 
-const styles = {
+const styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
         backgroundColor: Config.colorWrongBg,
@@ -246,7 +258,6 @@ const styles = {
     backdropImage: {
         position: 'absolute',
         width: Config.deviceWidth,
-        // height: Config.deviceWidth / 2 * 3, //ratio of height/width is 3/2
         height: Config.deviceHeight,
         bottom: 0,
     },
@@ -261,57 +272,12 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'stretch',
-        // borderWidth: 5,
-        // borderColor: 'black',
     },
     containerBottom: {
         flex: 1,
-        // justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'stretch',
-        // borderWidth: 5,
-        // borderColor: 'black',
     },
-    // controlsContainer: {
-    //     flexDirection: 'row',
-    //     // justifyContent: 'center',
-    //     // borderWidth: 1,
-    //     alignSelf: 'stretch',
-    //     justifyContent: 'space-around',
-    //     alignItems: 'center',
-    //     marginTop: 10,
-    //     marginBottom: 10,
-    // },
-    // rewardMessage: {
-    //     flexDirection: 'row',
-    //     alignItems: 'center',
-    //     borderWidth: 1,
-    //     borderColor: Config.colorAccent900,
-    //     backgroundColor: Config.colorAccent500,
-    //     // paddingLeft: 5,
-    //     // paddingRight: 5,
-    //     padding: 7,
-    //     margin: 5,
-    //     borderRadius: 15,
-    //     position: 'absolute',
-    //     // left: 300,
-    //     // marginRight: 25,
-    //     right: 20,
-    //     top: Config.headerHeight,
-    // },
-    // rewardMessageText: {
-    //     // padding: 3,
-    //     fontSize: 20,
-    //     fontWeight: 'bold',
-    //     color: Config.colorPrimary300,
-    //     fontFamily: Config.fontMain,
-    //     // textShadowColor: Config.colorAccent700,
-    //     // textShadowRadius: 1,
-    //     // textShadowOffset: {
-    //     //     height: 1,
-    //     //     width: 1
-    //     // },
-    // },
     textMessage: {
         padding: 3,
         backgroundColor: 'transparent',
@@ -327,60 +293,10 @@ const styles = {
             width: 1
         },
     },
-    // textArtistName: {
-    //     // padding: 3,
-    //     fontSize: 22,
-    //     // fontWeight: 'bold',
-    //     textAlign: 'center',
-    //     color: Config.colorPrimary,
-    //     backgroundColor: 'transparent',
-    //     fontFamily: Config.fontMain,
-    //     // textShadowColor: Config.colorAccent700,
-    //     // textShadowRadius: 1,
-    //     // textShadowOffset: {
-    //     //     height: 1,
-    //     //     width: 1
-    //     // },
-    // },
-    // textSongName: {
-    //     // padding: 3,
-    //     textAlign: 'center',
-    //     backgroundColor: 'transparent',
-    //     fontFamily: Config.fontMain,
-    //     fontSize: 20,
-    //     // fontWeight: 'bold',
-    //     color: Config.colorPrimary,
-    // },
     headerNumberFormat: {
-        // fontSize: 25,
         color: Config.colorAccent500,
-        // fontWeight: 'bold',
-        // paddingLeft: 15
     },
-    // itunesBadge: {
-    //     width: 180,     // png is 440 x 160
-    //     height: 180 * 160 / 440
-    // },
-    // googleBadge: {
-    //     width: 180,     // png is 564 x 168
-    //     height: 180 * 168 / 564
-    // },
-    // topContainer: {
-    //     flex: 0,
-    //     flexDirection: 'row',
-    //     justifyContent: 'center',
-    // },
-    // helpContainer: {
-    //     // flex: 1,
-    //     position: 'absolute',
-    //     // left: 300,
-    //     right: 0,
-    //     bottom: 0,
-    // },
-    // optionsContainer: {
-    //     flex: 1,
-    // }
-};
+});
 
 const mapStateToProps = state => {
     return { 

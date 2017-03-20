@@ -1,16 +1,19 @@
 import React from 'react';
 import firebase from 'firebase';
-import { View, Text, TouchableOpacity, Platform, Image, LayoutAnimation, AsyncStorage, Linking } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, Image, LayoutAnimation, AsyncStorage, Linking, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { connect } from 'react-redux';
 import { Player } from 'react-native-audio-toolkit';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
+import FBSDK from 'react-native-fbsdk';
 
-import { ButtonNext, Babyface, BannerSpace, Header, Confirm } from '../components';
+import { ButtonNext, Babyface, Header, Confirm } from '../components';
 import Config from '../Config';
 import Strings from '../Strings';
 import { rewardChallenge, saveChallenge, challengeUpdate, saveUserInfoToFirebase } from '../actions';
+
+const { ShareButton } = FBSDK;
 
 const animationSchemaSwing = {
   0: {
@@ -52,17 +55,25 @@ const animationSchemaRotateRev = {
   },
 };
 
-
 class Correct extends React.Component {
-    state = { 
-        rewardMessageVisible: false, 
-        artistName: '', 
-        songName: '', 
-        challengeNum: '', 
-        dance: true,
-        confirmOkModal: false,
-        confirmOkModalMessage: '', 
-    };
+    constructor(props) {
+        super(props);
+        const shareLinkContent = {
+            contentType: 'link',
+            contentUrl: 'https://baybay.co',
+        };
+        this.state = {
+            shareLinkContent,
+            rewardMessageVisible: false, 
+            artistName: '', 
+            songName: '', 
+            challengeNum: '', 
+            displayMessage: '', 
+            dance: true,
+            confirmOkModal: false,
+            confirmOkModalMessage: '', 
+        };
+    }
 
     componentWillMount() {
         LayoutAnimation.spring();
@@ -75,7 +86,7 @@ class Correct extends React.Component {
             if (!challenges) {
                 // there are no values, this is the first true, show messsage
                 return this.setState({ 
-                    confirmOkModal: !this.state.confirmOkModal, 
+                    confirmOkModal: true, 
                     confirmOkModalMessage: Strings.congratsOnWinning200Coins, 
                 });
             }
@@ -89,12 +100,14 @@ class Correct extends React.Component {
             artistName: this.props.selected.challenge.artistName, 
             songName: this.props.selected.challenge.songName,
             challengeNum: challengeNumber,
+            displayMessage: this.getDisplayMessage(),
          });
     }
     componentDidMount() {
         // if challenge was never played, reward user with coins
         // check props.challenges for key with current challenge id
         const id = this.props.selected.challenge.challengeId;
+
         if (this.props.challenges.hasOwnProperty(id)) {
             // console.log('value exists, played before, no reward');
         } else {
@@ -122,6 +135,7 @@ class Correct extends React.Component {
         this.props.saveChallenge(id, true);
         this.playSuccessSound();
     }
+
     componentWillReceiveProps(nextProps) {
         // if user is signed in firebase, save updated user data to firebase
 
@@ -144,6 +158,7 @@ class Correct extends React.Component {
         const url = `https://play.google.com/store/search?q=${searchString}&c=music`;
         return Linking.openURL(url);
     }
+
     onPressNext() {
         this.stopChallengeLongSound();
         const thisChallengeIndex = this.props.selected.challengeIndex;
@@ -169,16 +184,37 @@ class Correct extends React.Component {
         this.stopChallengeLongSound();
         Actions.challenges();
     }
-    playSuccessSound() {
-        // get random songname
-        const array = this.props.gamesounds[1].urls;
-        const randomIndex = Math.floor(Math.random() * array.length);
-        const songName = array[randomIndex].url;
-        const songNameEncoded = songName.replace(/ /g, '%20');
-        
-        new Player('file://' + Config.localGamesounds + songNameEncoded).play();
+
+    onAcceptConfirmOKModal() {
+        this.setState({ confirmOkModal: false });
     }
 
+    getDisplayMessage() {
+        // possible displayed messages
+        // not all languages have 17 options
+        const messages = [
+            Strings.goodGuess,
+            Strings.goodGuess2 ? Strings.goodGuess2 : Strings.goodGuess,
+            Strings.goodGuess3 ? Strings.goodGuess3 : Strings.goodGuess,
+            Strings.goodGuess4 ? Strings.goodGuess4 : Strings.goodGuess,
+            Strings.goodGuess5 ? Strings.goodGuess5 : Strings.goodGuess,
+            Strings.goodGuess6 ? Strings.goodGuess6 : Strings.goodGuess,
+            Strings.goodGuess7 ? Strings.goodGuess7 : Strings.goodGuess,
+            Strings.goodGuess8 ? Strings.goodGuess8 : Strings.goodGuess,
+            Strings.goodGuess9 ? Strings.goodGuess9 : Strings.goodGuess,
+            Strings.goodGuess10 ? Strings.goodGuess10 : Strings.goodGuess,
+            Strings.goodGuess11 ? Strings.goodGuess11 : Strings.goodGuess,
+            Strings.goodGuess12 ? Strings.goodGuess12 : Strings.goodGuess,
+            Strings.goodGuess13 ? Strings.goodGuess13 : Strings.goodGuess,
+            Strings.goodGuess14 ? Strings.goodGuess14 : Strings.goodGuess,
+            Strings.goodGuess15 ? Strings.goodGuess15 : Strings.goodGuess,
+            Strings.goodGuess16 ? Strings.goodGuess16 : Strings.goodGuess,
+            Strings.goodGuess17 ? Strings.goodGuess17 : Strings.goodGuess,
+        ];
+
+        // return random message to display
+        return messages[Math.floor(Math.random() * messages.length)].toUpperCase();
+    }
 
     playChallengeLongSound() {
         // make baby move
@@ -196,14 +232,21 @@ class Correct extends React.Component {
         // this.longSound.duration = 10;
         this.longSound.play();
     }
+
     stopChallengeLongSound() {
         // stop baby
         this.setState({ dance: false });
         this.longSound.destroy();
     }
-    
-    onAcceptConfirmOKModal() {
-        this.setState({ confirmOkModal: false });
+
+    playSuccessSound() {
+        // get random songname
+        const array = this.props.gamesounds[1].urls;
+        const randomIndex = Math.floor(Math.random() * array.length);
+        const songName = array[randomIndex].url;
+        const songNameEncoded = songName.replace(/ /g, '%20');
+        
+        new Player('file://' + Config.localGamesounds + songNameEncoded).play();
     }
 
     playChallengeBabySound() {
@@ -271,8 +314,8 @@ class Correct extends React.Component {
         return (
             <Animatable.View 
                 style={styles.rewardMessage}
-                animation="pulse" 
-                easing="ease-out" 
+                animation="tada" 
+                easing="linear" 
                 iterationCount="infinite"
             >
                 <Text style={styles.rewardMessageText}> + {Config.challengeReward} </Text>
@@ -286,17 +329,12 @@ class Correct extends React.Component {
     }
 
     render() {
-                // <Image 
-                //     source={require('../assets/images/backconfetti.png')}    
-                //     style={styles.backdropImage}
-                // />
         return (
             <View style={styles.screenContainer}>
                 <Animatable.Image 
                     source={require('../assets/images/backclouds.png')}    
                     style={styles.backdropImageClouds}
                     animation='fadeIn'
-                    // iterationCount="infinite"
                 />
                 <Animatable.Image 
                     source={require('../assets/images/backconfetti.png')}    
@@ -305,13 +343,10 @@ class Correct extends React.Component {
                     iterationCount="infinite"
                 />
 
-
                 <Animatable.Image
                     source={require('../assets/images/light.png')}   
                     style={styles.backLightImage}
                     animation={animationSchemaRotate} 
-                    // animation="rotate" 
-                    // easing="ease-in-out" 
                     iterationCount="infinite"
                 />
 
@@ -319,8 +354,6 @@ class Correct extends React.Component {
                     source={require('../assets/images/light.png')}   
                     style={styles.backLightImage}
                     animation={animationSchemaRotateRev} 
-                    // animation="rotate" 
-                    // easing="ease-in-out" 
                     iterationCount="infinite"
                 />
 
@@ -333,15 +366,14 @@ class Correct extends React.Component {
                     categoryName={this.props.selected.category.categoryName}
                 />
 
-
                 {this.renderBaby()}
                 
                 {this.state.rewardMessageVisible ? this.renderRewardMessage() : null }
 
                 <View style={styles.container}>
 
+                    <Text style={styles.textMessage}>{this.state.displayMessage}</Text>
 
-                    <Text style={styles.textMessage}>{Strings.goodGuess.toUpperCase()}</Text>
                     <Text style={styles.textArtistName}>{this.state.artistName.toUpperCase()}</Text>
                     <Text style={styles.textSongName}>{this.state.songName.toUpperCase()}</Text>
                     
@@ -386,7 +418,9 @@ class Correct extends React.Component {
                     <ButtonNext onPress={this.onPressNext.bind(this)} />
                 </View>
 
-                <BannerSpace />
+                <View style={styles.shareButton}>
+                    <ShareButton shareContent={this.state.shareLinkContent} />
+                </View>
 
                 <Confirm
                     ok
@@ -400,9 +434,8 @@ class Correct extends React.Component {
         );
     }
 }
-                        // <ButtonItunes onPress={this.onPressItunesButton.bind(this)} />
 
-const styles = {
+const styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
         backgroundColor: Config.colorAccent200,
@@ -410,7 +443,6 @@ const styles = {
     backdropImageClouds: {
         position: 'absolute',
         width: Config.deviceWidth,
-        // height: Config.deviceWidth / 2 * 3, //ratio of height/width is 3/2
         height: Config.deviceHeight,
         bottom: 0,
     },
@@ -431,13 +463,9 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'stretch',
-        // borderWidth: 5,
-        // borderColor: 'black',
     },
     controlsContainer: {
         flexDirection: 'row',
-        // justifyContent: 'center',
-        // borderWidth: 1,
         alignSelf: 'stretch',
         justifyContent: 'space-around',
         alignItems: 'center',
@@ -450,35 +478,22 @@ const styles = {
         borderWidth: 1,
         borderColor: Config.colorAccent900,
         backgroundColor: Config.colorAccent500,
-        // paddingLeft: 5,
-        // paddingRight: 5,
         padding: 7,
         margin: 5,
         borderRadius: 15,
         position: 'absolute',
-        // left: 300,
-        // marginRight: 25,
         right: 20,
         top: Config.headerHeight,
     },
     rewardMessageText: {
-        // padding: 3,
         fontSize: 20,
-        // fontWeight: 'bold',
         color: Config.colorPrimary300,
         fontFamily: Config.fontMain,
-        // textShadowColor: Config.colorAccent700,
-        // textShadowRadius: 1,
-        // textShadowOffset: {
-        //     height: 1,
-        //     width: 1
-        // },
     },
     textMessage: {
         padding: 3,
         backgroundColor: 'transparent',
         fontSize: 35,
-        // fontWeight: 'bold',
         fontFamily: Config.fontMain,
         color: Config.colorAccent700,
         textShadowColor: Config.colorPrimary900,
@@ -489,34 +504,21 @@ const styles = {
         },
     },
     textArtistName: {
-        // padding: 3,
         fontSize: 22,
-        // fontWeight: 'bold',
         textAlign: 'center',
         color: Config.colorPrimary,
         backgroundColor: 'transparent',
         fontFamily: Config.fontMain,
-        // textShadowColor: Config.colorAccent700,
-        // textShadowRadius: 1,
-        // textShadowOffset: {
-        //     height: 1,
-        //     width: 1
-        // },
     },
     textSongName: {
-        // padding: 3,
         textAlign: 'center',
         backgroundColor: 'transparent',
         fontFamily: Config.fontMain,
         fontSize: 20,
-        // fontWeight: 'bold',
         color: Config.colorPrimary,
     },
     headerNumberFormat: {
-        // fontSize: 25,
         color: Config.colorAccent500,
-        // fontWeight: 'bold',
-        // paddingLeft: 15
     },
     itunesBadge: {
         width: 180,     // png is 440 x 160
@@ -526,22 +528,13 @@ const styles = {
         width: 180,     // png is 564 x 168
         height: 180 * 168 / 564
     },
-    // topContainer: {
-    //     flex: 0,
-    //     flexDirection: 'row',
-    //     justifyContent: 'center',
-    // },
-    // helpContainer: {
-    //     // flex: 1,
-    //     position: 'absolute',
-    //     // left: 300,
-    //     right: 0,
-    //     bottom: 0,
-    // },
-    // optionsContainer: {
-    //     flex: 1,
-    // }
-};
+    shareButton: {
+        margin: 10,
+        flex: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+});
 
 const mapStateToProps = state => {
     return { 

@@ -1,14 +1,13 @@
 import React from 'react';
 import firebase from 'firebase';
-import { View, Text, Switch, Image, TouchableOpacity, ScrollView, NativeModules, Platform, AlertIOS } from 'react-native';
+import { View, Text, Switch, Image, TouchableOpacity, ScrollView, NativeModules, Platform, AlertIOS, Alert, StyleSheet } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { connect } from 'react-redux';
 import { Player } from 'react-native-audio-toolkit';
 import * as Animatable from 'react-native-animatable';
-// import { InAppBilling } from 'react-native-billing';
 
-import { Babyface, Button, Confirm, SettingsHeader, Spinner } from '../components';
+import { Babyface, Confirm, SettingsHeader, Spinner } from '../components';
 import Config from '../Config';
 import { toggleSwitchAccessory, coinsSubtract, saveUserInfoToFirebase } from '../actions';
 
@@ -17,23 +16,24 @@ const InAppBilling = require('react-native-billing');
 const { InAppUtils } = NativeModules;
 
 class Settings extends React.Component {
-    state = { 
-        buyModal: false, 
-        coinsModal: false, 
-        babyModal: false, 
-        buyCoinsView: true, 
-        inAppModal: false, 
-        accessory: '',
-        products: '',
-        buyOption: '',
-        // buyOptionCoins: '',
-        // buyOptionCoinsString: '',
+    constructor(props) {
+        super(props);
+        this.state = {
+            buyModal: false, 
+            coinsModal: false, 
+            babyModal: false, 
+            buyCoinsView: true, 
+            inAppModal: false, 
+            accessory: '',
+            products: '',
+            buyOption: '',
+        };
     }
     componentWillMount() {
         if (Platform.OS === 'ios') {
             this.getIOSPurchaseOptions();
         } else {
-            this.getAndroidPurchaseOptions();
+            this.getAndroidPurchaseOptions5();
         }
     }
     componentWillReceiveProps(nextProps) {
@@ -77,6 +77,58 @@ class Settings extends React.Component {
         this.setState({ inAppModal: false });
     }
     async getAndroidPurchaseOptions() {
+        // const products = [
+        //     'purchase_1000_coins',
+        //     'purchase_2500_coins',
+        //     'purchase_7000_coins',
+        //     'purchase_16000_coins',
+        // ];
+
+        // sample data until can test on android device
+        const sorted = [
+            { coins: 1000, coinsString: '1,000', priceString: '$1.00', identifier: 'purchase_1000_coins' },
+            { coins: 2500, coinsString: '2,500', priceString: '$2.00', identifier: 'purchase_2500_coins' },
+            { coins: 7000, coinsString: '7,000', priceString: '$4.00', identifier: 'purchase_7000_coins' },
+            { coins: 16000, coinsString: '16,000', priceString: '$10.00', identifier: 'purchase_16000_coins' },
+        ];
+
+        this.setState({ products: sorted });
+
+        // To be sure the service is close before opening it
+        await InAppBilling.close();
+        try {
+            await InAppBilling.open();
+            // inappbilling.getAvailableProducts(success, fail)
+            // It provides a json array of the list of owned products as a parameter
+            InAppBilling.getAvailableProducts((result) => {
+                // IF OK, add fields coins, coinsString, priceString, identifier 
+                // sort then add product details to state
+                Alert.alert('getAvailableProducts success', JSON.stringify(result), [{ text: 'OK', onPress: () => {} }]);
+
+                const resultNew = result.map((option) => {
+                    // option should contain title, priceText, description, currency, productId, re-map
+                    const newOption = {};
+                    newOption.coinsString = option.description;
+                    newOption.coins = Number(option.description.replace(',', ''));
+                    newOption.priceString = option.priceText;
+                    newOption.identifier = option.productId;
+
+                    return newOption;
+                });
+
+                this.setState({ products: resultNew });
+            }, (err) => {
+                // Alert.alert('InAppBilling Error', err, [{ text: 'OK', onPress: () => {} }]);
+                // console.log(err);
+            });
+        } catch (err) {
+            Alert.alert('InAppBilling Error', err, [{ text: 'OK', onPress: () => {} }]);
+            // console.log(err);
+        } finally {
+            await InAppBilling.close();
+        }
+    }
+    async getAndroidPurchaseOptionsOld() {
         const products = [
             'purchase_1000_coins',
             'purchase_2500_coins',
@@ -91,22 +143,154 @@ class Settings extends React.Component {
             { coins: 7000, coinsString: '7,000', priceString: '$4.00', identifier: 'purchase_7000_coins' },
             { coins: 16000, coinsString: '16,000', priceString: '$10.00', identifier: 'purchase_16000_coins' },
         ];
-            this.setState({ products: sorted });
+
+        this.setState({ products: sorted });
 
         // To be sure the service is close before opening it
         await InAppBilling.close();
-        try {
-            await InAppBilling.open();
-            const productDetails = await InAppBilling.getProductDetails(products);
-            console.log(productDetails);            
-            // IF OK, add fields coins, coinsString, priceString, identifier 
-            // sort then add product details to state
-            this.setState({ products: sorted });
-        } catch (err) {
-            console.log(err);
-        } finally {
+        // try {
+        //     await InAppBilling.open();
+        //     const productDetails = await InAppBilling.getProductDetails(products);
+        //     console.log('productdetails: ', productDetails);            
+        //     // IF OK, add fields coins, coinsString, priceString, identifier 
+        //     // sort then add product details to state
+        //     // const resultNew = productDetails.map((option) => {
+        //     //     const newOption = option;
+
+        //     //     return newOption;
+        //     // });
+        //     // this.setState({ products: resultNew });
+        // } catch (err) {
+        //     console.log(err);
+        //     // Alert.alert('InAppBilling Error', err, [{ text: 'OK', onPress: () => {} }]);
+        // } finally {
+        //     await InAppBilling.close();
+        // }
+    }
+    async getAndroidPurchaseOptions3() {
+        // sample data until can test on android device
+        const sorted = [
+            { coins: 1000, coinsString: '1,000', priceString: '$1.00', identifier: 'purchase_1000_coins' },
+            { coins: 2500, coinsString: '2,500', priceString: '$2.00', identifier: 'purchase_2500_coins' },
+            { coins: 7000, coinsString: '7,000', priceString: '$4.00', identifier: 'purchase_7000_coins' },
+            { coins: 16000, coinsString: '16,000', priceString: '$10.00', identifier: 'purchase_16000_coins' },
+        ];
+
+        this.setState({ products: sorted });
+
+        const products = [
+            'purchase_1000_coins',
+            'purchase_2500_coins',
+            'purchase_7000_coins',
+            'purchase_16000_coins',
+        ];
+
+        const newProductsArray = products.map(async (id) => {
+            const idInfo = {};
+            // To be sure the service is close before opening it
             await InAppBilling.close();
-        }
+            try {
+                await InAppBilling.open();
+                InAppBilling.getProductDetails(id)
+                .then((details) => {
+                    idInfo.identifier = details.productId;
+                    idInfo.priceString = details.priceText;
+                    idInfo.coinsString = details.description;
+                    idInfo.coins = Number(details.description.replace(',', ''));
+                    return idInfo;
+                });
+            } catch (err) {
+                // console.log(err);
+            } finally {
+                await InAppBilling.close();
+            }
+        });
+
+        this.setState({ products: newProductsArray });
+    }
+    async getAndroidPurchaseOptions4() {
+        // sample data until can test on android device
+        const sorted = [
+            { coins: 1000, coinsString: '1,000', priceString: '$1.00', identifier: 'purchase_1000_coins' },
+            { coins: 2500, coinsString: '2,500', priceString: '$2.00', identifier: 'purchase_2500_coins' },
+            { coins: 7000, coinsString: '7,000', priceString: '$4.00', identifier: 'purchase_7000_coins' },
+            { coins: 16000, coinsString: '16,000', priceString: '$10.00', identifier: 'purchase_16000_coins' },
+        ];
+
+        this.setState({ products: sorted });
+
+        const products = [
+            'purchase_1000_coins',
+            'purchase_2500_coins',
+            'purchase_7000_coins',
+            'purchase_16000_coins',
+        ];
+
+        const newProductsArray = products.map(async (productId) => {
+            const idInfo = {};
+
+            InAppBilling.open()
+                .then(async () => {
+                    const details = await InAppBilling.getProductDetails(productId);
+                    idInfo.ok = 123;
+                    idInfo.identifier = details.productId;
+                    idInfo.priceString = details.priceText;
+                    idInfo.coinsString = details.description;
+                    idInfo.coins = Number(details.description.replace(',', ''));
+                })
+                .then(() => InAppBilling.close());
+
+            return idInfo;
+        });
+
+        this.setState({ products: newProductsArray });
+        // Alert.alert('State products', JSON.stringify(this.state.products));
+        Alert.alert('State products', JSON.stringify(newProductsArray));
+    }
+    getAndroidPurchaseOptions5() {
+        // sample data until can test on android device
+        const data = [
+            { coins: 1000, coinsString: '1,000', priceString: '$', identifier: 'purchase_1000_coins' },
+            { coins: 2500, coinsString: '2,500', priceString: '$', identifier: 'purchase_2500_coins' },
+            { coins: 7000, coinsString: '7,000', priceString: '$', identifier: 'purchase_7000_coins' },
+            { coins: 16000, coinsString: '16,000', priceString: '$', identifier: 'purchase_16000_coins' },
+        ];
+
+        this.setState({ products: data });
+
+        // productIdsfrom Google Play Developer console
+        const products = [
+            'purchase_1000_coins',
+            'purchase_2500_coins',
+            'purchase_7000_coins',
+            'purchase_16000_coins',
+        ];
+
+        InAppBilling.open()
+            .then(async () => {
+                // get all info on above product ids
+                const productsDetails = await InAppBilling.getProductDetailsArray(products);
+
+                // add more custom values to each object
+                const addedProductDetails = productsDetails.map((obj) => {
+                    const newObj = Object.assign({}, obj);      // assign existing values, just for fun
+                    newObj.identifier = obj.productId;
+                    newObj.priceString = obj.priceText;
+                    newObj.coinsString = obj.description;
+                    newObj.coins = Number(obj.description.replace(',', ''));
+                    return newObj;
+                });
+
+                // sort by newly created coins value
+                const sorted = addedProductDetails.sort((a, b) => {
+                    return a.coins - b.coins;
+                });
+
+                // add to state to re-render
+                this.setState({ products: sorted });
+            })
+            .then(() => InAppBilling.close())
+            .catch((err) => Alert.alert('InAppBilling Error', JSON.stringify(err)));
     }
     getIOSPurchaseOptions() {
         // product ids from itunes connect
@@ -134,6 +318,7 @@ class Settings extends React.Component {
                 return a.coins - b.coins;
             });
 
+            // add to state to re-render
             this.setState({ products: sorted });
         });
     }
@@ -161,37 +346,38 @@ class Settings extends React.Component {
 
         InAppUtils.purchaseProduct(productIdentifier, (error, response) => {
             if (error) {
-                AlertIOS.alert('Purchase Not Completed', error.message);
+                // AlertIOS.alert('Purchase Not Completed', error.message);
             }
 
             if (response && response.productIdentifier) {
-                AlertIOS.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier);
+                // AlertIOS.alert('Purchase Successful', 'Your Transaction ID is ' + response.transactionIdentifier);
                 //unlock store here.
                 this.props.coinsSubtract(-this.state.buyOption.coins);
             }
         });
     }
     purchaseAndroidProduct() {
-        const productIdentifier = this.state.buyOption.identifier;  // this will contain product id
-        // test    GET DATA                                            **************** TODO
+        const productIdentifier = this.state.buyOption.identifier;
         // test with static responses use android.test.purchased
-        InAppBilling.open()
-        .then(async () => { 
-            const productDetails = await InAppBilling.getProductDetails(productIdentifier);
-            console.log(productDetails);
-        })
-        .then(() => InAppBilling.close());
-        
-        // should work on actual device
         // InAppBilling.open()
-        // .then(() => InAppBilling.purchase(productIdentifier))
-        // .then((details) => {
-        //     console.log("You purchased: ", details);
-        //     return InAppBilling.close();
+        // .then(async () => { 
+        //     const productDetails = await InAppBilling.getProductDetails(productIdentifier);
+        //     console.log('product details ', productDetails);
         // })
-        //     .catch((err) => {
-        //     console.log(err);
-        // });
+        // .then(() => InAppBilling.close());
+        
+        // should work only on actual device
+        InAppBilling.open()
+        .then(() => InAppBilling.purchase(productIdentifier))
+            .then(() => {
+                // console.log('You purchased: ', details.productId);
+                this.props.coinsSubtract(-this.state.buyOption.coins);
+                return InAppBilling.close();
+            })
+            .catch((err) => {
+                // Alert.alert('Purchase Not Completed', JSON.stringify(err));
+                // InAppBilling.close();
+            });
     }
 
     playSuccessSound() {
@@ -347,7 +533,6 @@ class Settings extends React.Component {
     }
 
     render() {
-        // console.log('main props.accessories ', this.props.accessories);
         const renderAccessoryBabyface = (
                 <View style={{ alignItems: 'center' }}>
                     <Babyface 
@@ -368,8 +553,7 @@ class Settings extends React.Component {
                 {this.renderCoinsPurchaseTable()}
             </ScrollView>
         );
-        // console.log('props ', this.props);
-        // console.log('state ', this.state);
+
         return (
             <View style={styles.screenContainer}>
 
@@ -465,18 +649,13 @@ class Settings extends React.Component {
     }
 }
 
-const styles = {
+const styles = StyleSheet.create({
     screenContainer: {
-        // marginBottom: 50,
         flex: 1,
         backgroundColor: Config.colorPrimary50,
     },
     selectionButtonContainer: {
-        // flex: 0,
-        // alignItems: 'center',
-        // justifyContent: 'space-between',
         flexDirection: 'row',
-        // alignItems: 'center',
     },
     spinner: {
         position: 'absolute',
@@ -491,10 +670,6 @@ const styles = {
         paddingBottom: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        // borderRadius: 15,
-        // textAlign: 'center',
-        // opacity: 0.2,
-        // color: 'white',
     },
     selectionButtonSelected: {
         flexDirection: 'row',
@@ -502,54 +677,36 @@ const styles = {
         backgroundColor: Config.colorPrimary900,
         paddingTop: 10,
         paddingBottom: 10,
-        // paddingRight: 15,
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 3,
         borderBottomColor: Config.colorAccent700,
-        // fontWeight: 'bold',
     },
     tableContainer: {
         flex: 1,
-        // borderTopWidth: 1,
-        // borderColor: Config.colorPrimary300,
     },
     accessoryRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        // borderWidth: 1,
-        // borderWidth: 1,
         borderBottomWidth: 1,
         borderColor: Config.colorPrimary200,
-        // borderLeftColor: 'white',
-        // borderRightColor: 'white',
         backgroundColor: 'white',
         minHeight: Config.deviceWidth / 8,
-        // flex: 1,
-        // justifyContent: 'space-around',
-        // marginBottom: 5,
     },
     columnThumb: {
         width: Config.deviceWidth / 10 * 2,
         alignItems: 'center',
-        // color: 'red',
-        // borderWidth: 1,
-        // borderColor: 'blue',
     },
     columnDesc: {
         width: Config.deviceWidth / 10 * 3,
-        // borderWidth: 1,
         alignSelf: 'stretch', 
         justifyContent: 'center',
-        // borderColor: 'green',
     },
     columnDescText: {
         color: Config.colorAccent700,
-        // opacity: 0.85,
         fontFamily: Config.fontMain,
     },
     columnOptionPriceText: {
-        // color: Config.colorAccent700,
         opacity: 0.85,
         textAlign: 'right',
         fontFamily: Config.fontMain,
@@ -557,29 +714,20 @@ const styles = {
     columnCoins: {
         width: Config.deviceWidth / 10 * 3,
         alignItems: 'center',
-        // borderWidth: 1,
-        // borderColor: 'green',
     },
     columnBuy: {
         width: Config.deviceWidth / 10 * 2,
         alignItems: 'center',
-        // borderWidth: 1,
-        // borderColor: 'red',
     },
     coinsBox: {
         flexDirection: 'row',
-        // justifyContent: 'flex-end',
     },
     coinsText: {
         opacity: 0.85,
-        // textAlign: 'right',
         fontFamily: Config.fontMain,
     },
     buyCoinsText: {
-        // opacity: 0.85,
         color: Config.colorAccent700,
-        // fontWeight: 'bold',
-        // textAlign: 'right',
         fontFamily: Config.fontMain,
     },
     coinStyle: {
@@ -587,8 +735,6 @@ const styles = {
     },
     buyCoinStyle: {
         color: Config.colorAccent700,
-        fontWeight: 'bold',
-        // opacity: 0.85,
     },
     thumbnail: {
         height: Config.deviceWidth / 10,
@@ -601,7 +747,7 @@ const styles = {
         padding: 5,
         borderRadius: 17,
     },
-};
+});
 
 const mapStateToProps = state => {
     return { 

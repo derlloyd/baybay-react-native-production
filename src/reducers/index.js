@@ -9,7 +9,6 @@ import SelectionReducer from './SelectionReducer';
 import CoinsReducer from './CoinsReducer';
 import AccessoriesReducer from './AccessoriesReducer';
 import ChallengesReducer from './ChallengesReducer';
-// import CoinsPurchaseReducer from './CoinsPurchaseReducer';
 import LevelsReducer from './LevelsReducer';
 import ShortsoundsReducer from './ShortsoundsReducer';
 
@@ -25,5 +24,4 @@ export default combineReducers({
     levels: LevelsReducer,
     gamesounds: AllGamesoundsReducer,
     shortsounds: ShortsoundsReducer,
-    // coinsPurchaseOptions: CoinsPurchaseReducer,
 });
