@@ -66,6 +66,7 @@ import com.android.build.OutputFile
  */
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -90,8 +91,8 @@ android {
         applicationId "com.baybay"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "2.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -137,6 +138,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-code-push')
     compile project(':react-native-fbsdk')
     compile project(':react-native-billing')
     compile project(':react-native-localization')

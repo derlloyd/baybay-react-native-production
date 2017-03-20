@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.microsoft.codepush.react.CodePush;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.idehub.Billing.InAppBillingBridgePackage;
 import com.babisoft.ReactNativeLocalization.ReactNativeLocalizationPackage;
@@ -30,6 +31,12 @@ public class MainApplication extends Application implements ReactApplication {
     return mCallbackManager;
   }
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
+    }
+
     @Override
     protected boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
@@ -39,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
             new FBSDKPackage(mCallbackManager),
             new InAppBillingBridgePackage("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSEXlzZ1U8nowG0Feh3qB9rcPcB7yI6I7E6979SO95hbDZWczn5CEYkYHgyKEHkc4/jE3qZa9MkoWVTkUE8rajR8lf1JTVLkiH0+FVgWSm/wabXwy1OsIGPoZkkLLRr3VnBfoBJn9wesWzVAZFD8yqbrKKAcCYObB0uwMnPB8IT8qcI5WHvrThCCxmsDTBD9DqW6UWCNleF7BmA93xKe377W6urgknfRSVA8VV08WPmkhG7RnYYcSTeqlbkbsEPOroqi+Tw9uaB0nq+X6MDOEUnnt2KmBNl+R86lEtm+VC8Xs+7xzOQ0eLFqmnk9Cc+KcX1nAWXXIagABmZ0wi6Q3wIDAQAB"),
             new ReactNativeLocalizationPackage(),

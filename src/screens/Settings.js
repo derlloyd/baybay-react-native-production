@@ -375,8 +375,8 @@ class Settings extends React.Component {
                 return InAppBilling.close();
             })
             .catch((err) => {
-                // Alert.alert('Purchase Not Completed', JSON.stringify(err));
-                // InAppBilling.close();
+                Alert.alert('Purchase Not Completed', JSON.stringify(err));
+                InAppBilling.close();
             });
     }
 

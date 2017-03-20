@@ -3,9 +3,12 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import firebase from 'firebase';
 import ReduxThunk from 'redux-thunk';
+import codePush from 'react-native-code-push';
+
 import reducers from './reducers';
 import Router from './Router';
 
+// @codePush
 class App extends Component {
     componentWillMount() {
         const config = {
@@ -16,7 +19,9 @@ class App extends Component {
 
         firebase.initializeApp(config);
     }
-
+    componentDidMount() {
+        codePush.sync();
+    }
     render() {
         // 3rd arg is for store enhancer, thunk middleware
         const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
