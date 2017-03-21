@@ -370,6 +370,9 @@ class Welcome extends React.Component {
                             onLogoutFinished={this.onFbLogoutFinished.bind(this)} 
                         />
                     </View>
+                    <Text onPress={() => Actions.admob()}>
+                        admob
+                    </Text>
 
                 </View>
 

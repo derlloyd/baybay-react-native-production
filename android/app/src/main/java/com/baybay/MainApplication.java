@@ -19,6 +19,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.futurice.rctaudiotoolkit.AudioPackage;
+import com.sbugert.rnadmob.RNAdMobPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+          new RNAdMobPackage(),
             new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
             new FBSDKPackage(mCallbackManager),
             new InAppBillingBridgePackage("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArSEXlzZ1U8nowG0Feh3qB9rcPcB7yI6I7E6979SO95hbDZWczn5CEYkYHgyKEHkc4/jE3qZa9MkoWVTkUE8rajR8lf1JTVLkiH0+FVgWSm/wabXwy1OsIGPoZkkLLRr3VnBfoBJn9wesWzVAZFD8yqbrKKAcCYObB0uwMnPB8IT8qcI5WHvrThCCxmsDTBD9DqW6UWCNleF7BmA93xKe377W6urgknfRSVA8VV08WPmkhG7RnYYcSTeqlbkbsEPOroqi+Tw9uaB0nq+X6MDOEUnnt2KmBNl+R86lEtm+VC8Xs+7xzOQ0eLFqmnk9Cc+KcX1nAWXXIagABmZ0wi6Q3wIDAQAB"),

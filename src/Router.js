@@ -8,6 +8,7 @@ import Welcome from './screens/Welcome';
 import Categories from './screens/Categories';
 import ChallengeGrid from './screens/ChallengeGrid';
 import Artist from './screens/Artist';
+import Admob from './screens/Admob';
 import Song from './screens/Song';
 import Wrong from './screens/Wrong';
 import Correct from './screens/Correct';
@@ -96,6 +97,17 @@ const RouterComponent = () => {
                     component={Correct} 
                     animation="fade"
                     // direction='vertical' 
+                />
+
+                <Scene
+                    key="admob" 
+                    component={Admob} 
+                    // type="reset"
+                    // title="Select Category"
+                    // leftTitle="Home"
+                    // onLeft={() => Actions.welcome()} 
+                    // rightTitle="Store"
+                    // onRight={() => Actions.setings_tabs()}
                 />
             </Scene>
             

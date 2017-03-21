@@ -7,11 +7,16 @@ import { Player } from 'react-native-audio-toolkit';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 import FBSDK from 'react-native-fbsdk';
+// import { AdMobInterstitial } from 'react-native-admob';
 
 import { ButtonNext, Babyface, Header, Confirm } from '../components';
 import Config from '../Config';
 import Strings from '../Strings';
 import { rewardChallenge, saveChallenge, challengeUpdate, saveUserInfoToFirebase } from '../actions';
+
+// Admob info that triggers onPressNext
+// AdMobInterstitial.setAdUnitID('ca-app-pub-6283261521073320/9700118297');
+// AdMobInterstitial.setTestDeviceID('EMULATOR');
 
 const { ShareButton } = FBSDK;
 
@@ -160,6 +165,7 @@ class Correct extends React.Component {
     }
 
     onPressNext() {
+        this.showAd();
         this.stopChallengeLongSound();
         const thisChallengeIndex = this.props.selected.challengeIndex;
         const nextChallengeIndex = this.props.selected.challengeIndex + 1;
@@ -215,7 +221,12 @@ class Correct extends React.Component {
         // return random message to display
         return messages[Math.floor(Math.random() * messages.length)].toUpperCase();
     }
-
+    showAd() {
+        // only show ad 1 of every 2 times, so every time challenge index is even
+        if (this.props.selected.challengeIndex % 2 === 0) {
+            // AdMobInterstitial.requestAd(AdMobInterstitial.showAd);
+        }
+    }
     playChallengeLongSound() {
         // make baby move
         this.setState({ dance: true });
