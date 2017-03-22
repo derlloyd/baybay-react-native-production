@@ -7,7 +7,7 @@ import { Player } from 'react-native-audio-toolkit';
 import FBSDK from 'react-native-fbsdk';
 import * as Animatable from 'react-native-animatable';
 
-import { Header, Spinner, ButtonOption, Babyface, Confirm, HelpButton } from '../components';
+import { BannerSpace, Header, Spinner, ButtonOption, Babyface, Confirm, HelpButton } from '../components';
 import { fetchChallengeShortSound, fetchChallengeLongSound, removeWrongOption, saveUserInfoToFirebase } from '../actions';
 import Config from '../Config';
 import Strings from '../Strings';
@@ -30,6 +30,7 @@ class Artist extends React.Component {
             coinsModal: false, 
             confirmOkModal: false, 
             confirmOkModalMessage: '',
+            renderShareButton: null,
         };
     }
 
@@ -48,6 +49,8 @@ class Artist extends React.Component {
         // load short and long mp3s, pass the challenge object
         this.props.fetchChallengeShortSound(this.props.selected.challenge);
         this.props.fetchChallengeLongSound(this.props.selected.challenge);
+
+        setTimeout(() => this.setState({ renderShareButton: true }), 1500);
     }
     componentWillReceiveProps(nextProps) {
         // if user is signed in firebase, save updated user data to firebase
@@ -163,7 +166,21 @@ class Artist extends React.Component {
                 <Spinner style={{ height: 200, width: 200 }} />
             );
     }
-
+    renderShare() {
+        return (
+            setTimeout(this.setState({ renderShareButton: true }), 3000)
+        );
+    }
+    renderShare2() {
+        return (
+            <Animatable.View 
+                style={styles.shareButton}
+                animation='slideInLeft'
+            >
+                <ShareButton shareContent={this.state.shareLinkContent} />
+            </Animatable.View>
+        );
+    }
     render() {
         const i = this.props.selected.challengeIndex;
         const challengeNumber = ((i + 1) < 10) ? `0${(i + 1).toString()}` : (i + 1).toString();
@@ -188,8 +205,18 @@ class Artist extends React.Component {
                     levelName={`${Strings.level} ${this.props.selected.level.levelNum}`}
                     categoryName={this.props.selected.category.categoryName}
                 />
-                
+                    {this.state.renderShareButton ? (
+                        <Animatable.View 
+                            style={styles.shareButton}
+                            animation='slideInLeft'
+                        >
+                            <ShareButton shareContent={this.state.shareLinkContent} />
+                        </Animatable.View>
+                    ) : null}
+
                 <View style={styles.container}>
+
+
                     <View style={styles.topContainer}>
 
                         {this.renderBabyface()}
@@ -206,9 +233,7 @@ class Artist extends React.Component {
 
                 </View>
 
-                <View style={styles.shareButton}>
-                    <ShareButton shareContent={this.state.shareLinkContent} />
-                </View>
+                <BannerSpace />
 
                 <Confirm
                     visible={this.state.optionsModal}
@@ -273,9 +298,9 @@ const styles = StyleSheet.create({
     },
     shareButton: {
         margin: 10,
-        flex: 0,
-        flexDirection: 'row',
-        justifyContent: 'center',
+        position: 'absolute',
+        top: Config.headerHeight,
+        zIndex: 999,
     },
 });
 

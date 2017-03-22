@@ -7,7 +7,7 @@ import { Player } from 'react-native-audio-toolkit';
 import FBSDK from 'react-native-fbsdk';
 import * as Animatable from 'react-native-animatable';
 
-import { Header, ButtonOption, Babyface, Confirm, HelpButton } from '../components';
+import { BannerSpace, Header, ButtonOption, Babyface, Confirm, HelpButton } from '../components';
 import { fetchChallengeShortSound, fetchChallengeLongSound, removeWrongOption, saveUserInfoToFirebase } from '../actions';
 import Config from '../Config';
 import Strings from '../Strings';
@@ -158,6 +158,11 @@ class Song extends React.Component {
                 />
 
                 <View style={styles.container}>
+
+                    <View style={styles.shareButton}>
+                        <ShareButton shareContent={this.state.shareLinkContent} />
+                    </View>
+
                     <View style={styles.topContainer}>
 
                             <Babyface onPress={this.clickBaby.bind(this)} accessories={this.props.accessories} />
@@ -176,10 +181,8 @@ class Song extends React.Component {
 
                 </View>
 
-                <View style={styles.shareButton}>
-                    <ShareButton shareContent={this.state.shareLinkContent} />
-                </View>
-
+                <BannerSpace />
+                
                 <Confirm
                     visible={this.state.optionsModal}
                     onAccept={this.onAcceptOptionsModal.bind(this)}
@@ -243,9 +246,8 @@ const styles = StyleSheet.create({
     },
     shareButton: {
         margin: 10,
-        flex: 0,
-        flexDirection: 'row',
-        justifyContent: 'center',
+        position: 'absolute',
+        zIndex: 999,
     },
 });
 

@@ -8,23 +8,39 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 // import { AdMobInterstitial } from 'react-native-admob';  // Android  ok
-import { AdMobInterstitial } from 'react-native-admob'; 
+import { AdMobInterstitial, AdMobBanner } from 'react-native-admob'; 
 // import * as Admob from 'react-native-admob';
-
+import { BannerSpace } from '../components';
 
 
 // AdMobInterstitial.setAdUnitID('ca-app-pub-6283261521073320/9700118297');   // Android  ok
 // AdMobInterstitial.setTestDeviceID('EMULATOR');         // Android  ok
 
 class AdMob extends React.Component {
+  // constructor(props) {
+  //       super(props);
+  //       this.state = {
+  //           obj: AdMobInterstitial, 
+  //           setAdUnitId: AdMobInterstitial.setAdUnitId, 
+  //           requestAd: AdMobInterstitial.requestAd, 
+  //       };
+  //   }
+  // componentWillMount() {
+  //   // const func = AdMobInterstitial.setAdUnitId;
 
+  // }
   componentDidMount() {
-    console.log('AdMobInterstitial ', AdMobInterstitial);
+    // AdMobInterstitial.setTestDeviceID('EMULATOR');
+    // AdMobInterstitial.setAdUnitID('ca-app-pub-6283261521073320/9700118297');
+    // // AdMobInterstitial.requestAd(AdMobInterstitial.showAd);
+    // AdMobInterstitial.requestAd((error) => error && console.log(error));
+    // console.log('AdMobInterstitial ', AdMobInterstitial);
   // Admob.AdMobInterstitial.setTestDeviceID('EMULATOR');   // not needed ios
   // console.log('admob obj ', Admob);
-  console.log('function type ', typeof AdMobInterstitial.setAdUnitId);
+  // console.log('function type ', typeof AdMobInterstitial.setAdUnitId);
+  // func('ca-app-pub-6283261521073320/9700118297');
   // AdMobInterstitial.setAdUnitId();
-  AdMobInterstitial.setAdUnitId('ca-app-pub-6283261521073320/9700118297');   //ios
+  // this.state.setAdUnitId('ca-app-pub-6283261521073320/9700118297');   //ios
 
     // AdMobInterstitial.requestAd(AdMobInterstitial.showAd);     //android ok
 
@@ -52,10 +68,22 @@ class AdMob extends React.Component {
     //   }
     // );
   }
+  showAd() {
+    // console.log(this.state);
+    // console.log(typeof this.state.requestAd);
+    // this.state.requestAd();
+    // AdMobInterstitial.requestAd(x => console.log(x));
+    // AdMobInterstitial.requestAd(AdMobInterstitial.showAd((error) => error && console.log(error)));
+    // AdMobInterstitial.requestAd(AdMobInterstitial.showAd);
+  
+    // AdMobRewarded.showAd((error) => error && console.log(error));
+    AdMobInterstitial.showAd((error) => error && console.log(error));
+  }
   popBack() {
         Actions.pop();
   }
   render() {
+    // console.log(this.state);
     return (
         <View>
             <Text onPress={() => this.popBack()}>ok11111111</Text>
@@ -63,6 +91,17 @@ class AdMob extends React.Component {
             <Text onPress={() => this.popBack()}>ok11111111</Text>
             <Text onPress={() => this.popBack()}>ok11111111</Text>
             <Text onPress={() => this.popBack()}>ok11111111</Text>
+            <Text onPress={this.showAd.bind(this)}>
+              Show ADDDD
+            </Text>
+
+            <AdMobBanner
+              // bannerSize="smartBannerPortrait"
+              adUnitID='ca-app-pub-6283261521073320/1099294691'
+              testDeviceID="EMULATOR"
+              // didFailToReceiveAdWithError={(err) => console.log(err)}
+            />
+            <BannerSpace />
         </View>
     );
   }

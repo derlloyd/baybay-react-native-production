@@ -47,6 +47,7 @@
 		B9391C1B1E65135C006CA8EE /* RifficFree-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9391C1A1E65135C006CA8EE /* RifficFree-Bold.ttf */; };
 		B9391C7B1E67447E006CA8EE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9391C7A1E67447E006CA8EE /* StoreKit.framework */; };
 		B973A4521E8248DE00C47A1C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B973A4511E8248DE00C47A1C /* GoogleService-Info.plist */; };
+		B9DBBB6B1E82E5C700AE90C0 /* libRNAdMobManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B973A44F1E823A3D00C47A1C /* libRNAdMobManager.a */; };
 		B9DD87661E82B1C0002084B9 /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DD87621E82B1C0002084B9 /* FirebaseAnalytics.framework */; };
 		B9DD87671E82B1C0002084B9 /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DD87631E82B1C0002084B9 /* FirebaseCore.framework */; };
 		B9DD87681E82B1C0002084B9 /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9DD87641E82B1C0002084B9 /* FirebaseInstanceID.framework */; };
@@ -410,6 +411,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				B9DBBB6B1E82E5C700AE90C0 /* libRNAdMobManager.a in Frameworks */,
 				426E2A8B772C49329559837F /* libRNVectorIcons.a in Frameworks */,
 				58784F6BF47045A0A8BB0C78 /* libRNFetchBlob.a in Frameworks */,
 				B9DD87691E82B1C0002084B9 /* GoogleToolboxForMac.framework in Frameworks */,

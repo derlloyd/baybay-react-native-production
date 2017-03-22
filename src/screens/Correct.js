@@ -7,16 +7,16 @@ import { Player } from 'react-native-audio-toolkit';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 import FBSDK from 'react-native-fbsdk';
-// import { AdMobInterstitial } from 'react-native-admob';
+import { AdMobInterstitial } from 'react-native-admob';
 
-import { ButtonNext, Babyface, Header, Confirm } from '../components';
+import { BannerSpace, ButtonNext, Babyface, Header, Confirm } from '../components';
 import Config from '../Config';
 import Strings from '../Strings';
 import { rewardChallenge, saveChallenge, challengeUpdate, saveUserInfoToFirebase } from '../actions';
 
 // Admob info that triggers onPressNext
-// AdMobInterstitial.setAdUnitID('ca-app-pub-6283261521073320/9700118297');
-// AdMobInterstitial.setTestDeviceID('EMULATOR');
+AdMobInterstitial.setAdUnitID('ca-app-pub-6283261521073320/9700118297');
+AdMobInterstitial.setTestDeviceID('EMULATOR');
 
 const { ShareButton } = FBSDK;
 
@@ -142,7 +142,7 @@ class Correct extends React.Component {
 
         // only load ad 1 of every 2 times
         if (this.props.selected.challengeIndex % 2 === 0) {
-            // AdMobInterstitial.requestAd();
+            AdMobInterstitial.requestAd();
         }
     }
 
@@ -174,7 +174,7 @@ class Correct extends React.Component {
 
         // only show ad 1 of every 2 times
         if (this.props.selected.challengeIndex % 2 === 0) {
-            // AdMobInterstitial.showAd();
+            AdMobInterstitial.showAd();
         } 
 
         const thisChallengeIndex = this.props.selected.challengeIndex;
@@ -380,6 +380,11 @@ class Correct extends React.Component {
                     categoryName={this.props.selected.category.categoryName}
                 />
 
+
+                <View style={styles.shareButton}>
+                    <ShareButton shareContent={this.state.shareLinkContent} />
+                </View>
+
                 {this.renderBaby()}
                 
                 {this.state.rewardMessageVisible ? this.renderRewardMessage() : null }
@@ -432,9 +437,7 @@ class Correct extends React.Component {
                     <ButtonNext onPress={this.onPressNext.bind(this)} />
                 </View>
 
-                <View style={styles.shareButton}>
-                    <ShareButton shareContent={this.state.shareLinkContent} />
-                </View>
+                <BannerSpace />
 
                 <Confirm
                     ok
@@ -544,9 +547,9 @@ const styles = StyleSheet.create({
     },
     shareButton: {
         margin: 10,
-        flex: 0,
-        flexDirection: 'row',
-        justifyContent: 'center',
+        position: 'absolute',
+        top: Config.headerHeight,
+        zIndex: 999,
     },
 });
 
