@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 // import { AdMobInterstitial } from 'react-native-admob';  // Android  ok
-import * as Admob from 'react-native-admob';
+import { AdMobInterstitial } from 'react-native-admob'; 
+// import * as Admob from 'react-native-admob';
 
 
 
@@ -18,11 +19,13 @@ import * as Admob from 'react-native-admob';
 class AdMob extends React.Component {
 
   componentDidMount() {
-// Admob.AdMobInterstitial.setTestDeviceID('EMULATOR');   // not needed ios
-console.log('admob obj ', Admob);
-console.log('function type ', typeof Admob.AdMobInterstitial.setAdUnitId);
-// Admob.AdMobInterstitial.setAdUnitId();
-// Admob.AdMobInterstitial.setAdUnitId('ca-app-pub-6283261521073320/9700118297');   //ios
+    console.log('AdMobInterstitial ', AdMobInterstitial);
+  // Admob.AdMobInterstitial.setTestDeviceID('EMULATOR');   // not needed ios
+  // console.log('admob obj ', Admob);
+  console.log('function type ', typeof AdMobInterstitial.setAdUnitId);
+  // AdMobInterstitial.setAdUnitId();
+  AdMobInterstitial.setAdUnitId('ca-app-pub-6283261521073320/9700118297');   //ios
+
     // AdMobInterstitial.requestAd(AdMobInterstitial.showAd);     //android ok
 
     // AdMobInterstitial.addEventListener('interstitialDidClose',

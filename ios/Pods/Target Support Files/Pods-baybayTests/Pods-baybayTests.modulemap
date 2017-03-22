@@ -1,0 +1,6 @@
+framework module Pods_baybayTests {
+  umbrella header "Pods-baybayTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
