@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import {
   // StyleSheet,
   Text,
@@ -238,4 +238,4 @@ export default Admob;
 //     color: '#333333',
 //     marginBottom: 15,
 //   },
-// });
+// });*/

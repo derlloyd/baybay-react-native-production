@@ -43,7 +43,6 @@ const animationSchema = {
 class Welcome extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             okModal: false, 
             okModalText: 'ok', 
@@ -370,9 +369,6 @@ class Welcome extends React.Component {
                             onLogoutFinished={this.onFbLogoutFinished.bind(this)} 
                         />
                     </View>
-                    <Text onPress={() => Actions.admob()}>
-                        admob
-                    </Text>
 
                 </View>
 

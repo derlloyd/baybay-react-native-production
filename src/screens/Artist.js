@@ -50,7 +50,7 @@ class Artist extends React.Component {
         this.props.fetchChallengeShortSound(this.props.selected.challenge);
         this.props.fetchChallengeLongSound(this.props.selected.challenge);
 
-        setTimeout(() => this.setState({ renderShareButton: true }), 1500);
+        setTimeout(() => this.setState({ renderShareButton: true }), 2500);
     }
     componentWillReceiveProps(nextProps) {
         // if user is signed in firebase, save updated user data to firebase

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -16,9 +16,6 @@
             <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" image="backclouds" translatesAutoresizingMaskIntoConstraints="NO" id="xwF-Ds-cqA">
-                    <rect key="frame" x="-72" y="-215" width="640" height="776"/>
-                </imageView>
                 <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" image="title" translatesAutoresizingMaskIntoConstraints="NO" id="H7H-nF-mbr">
                     <rect key="frame" x="107" y="187" width="269" height="82"/>
                     <constraints>
@@ -28,14 +25,10 @@
             </subviews>
             <color key="backgroundColor" red="0.56470588235294117" green="0.792156862745098" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="xwF-Ds-cqA" secondAttribute="trailing" id="1fk-0b-jEP"/>
-                <constraint firstItem="H7H-nF-mbr" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="50" id="8gO-94-J80"/>
-                <constraint firstItem="xwF-Ds-cqA" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="BkL-uj-KUT"/>
+                <constraint firstItem="H7H-nF-mbr" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="100" id="8gO-94-J80"/>
                 <constraint firstItem="H7H-nF-mbr" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="DZL-8U-wbX"/>
-                <constraint firstItem="xwF-Ds-cqA" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="Hwb-D5-vnu"/>
-                <constraint firstAttribute="trailing" secondItem="H7H-nF-mbr" secondAttribute="trailing" constant="50" id="I4C-hs-YcL"/>
+                <constraint firstAttribute="trailing" secondItem="H7H-nF-mbr" secondAttribute="trailing" constant="100" id="I4C-hs-YcL"/>
                 <constraint firstItem="H7H-nF-mbr" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Y94-9x-pJj"/>
-                <constraint firstAttribute="bottom" secondItem="xwF-Ds-cqA" secondAttribute="bottom" id="cNk-Pc-XTl"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -43,7 +36,6 @@
         </view>
     </objects>
     <resources>
-        <image name="backclouds" width="640" height="960"/>
-        <image name="title" width="1460" height="435"/>
+        <image name="title" width="973" height="290"/>
     </resources>
 </document>

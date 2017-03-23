@@ -56,7 +56,7 @@ const styles = {
         borderRadius: 10,     // rounded corners
         marginLeft: Config.deviceWidth / 20,
         marginRight: Config.deviceWidth / 20,
-        minHeight: Config.deviceWidth / 10,
+        minHeight: Config.deviceWidth / 13,  // 10 overlaps on tablets
     },
     buttonStyleDisabled: {
         marginTop: 5,
