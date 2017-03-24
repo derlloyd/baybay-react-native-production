@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "891266849014",
+    "firebase_url": "https://baybay-6dacb.firebaseio.com",
+    "project_id": "baybay-6dacb",
+    "storage_bucket": "baybay-6dacb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:891266849014:android:fca314bccaa4b970",
+        "android_client_info": {
+          "package_name": "com.baybay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "891266849014-qb9uct3250824h6rrsv0k969o8l203md.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "891266849014-u28jj4hcv426ft3bmk9tmqv5lef5or6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChiQ3Qo5gj4nniqwkcKZFBIEYLLneI5bM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

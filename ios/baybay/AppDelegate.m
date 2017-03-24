@@ -23,14 +23,17 @@
 #ifdef DEBUG
     jsCodeLocation = [NSURL URLWithString:@"http://localhost:8081/index.ios.bundle?platform=ios&dev=true"];
 #else
+      // uncomment for codepush
     jsCodeLocation = [CodePush bundleURL];
+  
+  //  standard before CodePush
+//    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
+  
 #endif
 
-//  production location before CodePush
+//  jsCodeLocation before CodePush (according to codepush docs)
 // jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 
-//  debug location before CodePush
-//  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
   
   for (NSString* family in [UIFont familyNames])
   {
