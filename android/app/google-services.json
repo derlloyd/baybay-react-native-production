@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "891266849014-hspsrnpqs17pddo6hcan1funjnp70m3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.baybay",
+            "certificate_hash": "2a4c6ad7b822eb8226d5b5b61dbb8bc0f4dd3857"
+          }
+        },
+        {
+          "client_id": "891266849014-hb193spru0l86os3tt5ps42bghpgkdcv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.baybay",
+            "certificate_hash": "3e0c7ce9e4dad2e97d909e4a42669dcfc0a9bd6d"
+          }
+        },
+        {
           "client_id": "891266849014-qb9uct3250824h6rrsv0k969o8l203md.apps.googleusercontent.com",
           "client_type": 3
         },
@@ -33,8 +49,20 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "891266849014-16en09v0h3red47mv5prnssk8ruf6sl8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.jjj"
+              }
+            },
+            {
+              "client_id": "891266849014-qb9uct3250824h6rrsv0k969o8l203md.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
