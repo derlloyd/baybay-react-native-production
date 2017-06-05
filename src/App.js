@@ -17,7 +17,9 @@ class App extends Component {
             databaseURL: 'https://baybay-6dacb.firebaseio.com/'
         };
 
-        firebase.initializeApp(config);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(config);
+        }
     }
     componentDidMount() {
         codePush.sync();
